@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import http from "@/apis/request";
-import { useStore } from "@store/index";
+import { useStore } from "@/store/index";
 import { ref } from "vue";
 
 const msg = ref("");
@@ -14,4 +14,5 @@ const store = useStore();
   <h1>Index</h1>
   <h2>{{ store.state.test }}</h2>
   <h2>{{ msg }}</h2>
+  <router-link to="/login">跳转到Login</router-link>
 </template>

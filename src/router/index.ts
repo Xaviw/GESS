@@ -1,4 +1,12 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import "vue-router";
+
+declare module "vue-router" {
+  interface RouteMeta {
+    title?: string;
+    layout?: string;
+  }
+}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -8,6 +16,14 @@ const routes: RouteRecordRaw[] = [
       title: "首页",
     },
   },
+  {
+    path: "/login",
+    component: () => import("@views/login.vue"),
+    meta: {
+      title: "登录",
+      layout: "blank",
+    },
+  },
 ];
 
 const router = createRouter({
@@ -15,9 +31,10 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  document.title = to.meta.title as string;
-  next();
+router.beforeEach((to, from) => {});
+
+router.afterEach((to, from) => {
+  document.title = to.meta.title ?? import.meta.env.VITE_APP_TITLE;
 });
 
 export default router;

@@ -18,13 +18,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "src"),
-        "@apis": resolve(__dirname, "src/apis"),
-        "@assets": resolve(__dirname, "src/assets"),
         "@comps": resolve(__dirname, "src/components"),
-        "@router": resolve(__dirname, "src/router"),
-        "@store": resolve(__dirname, "src/store"),
-        "@styles": resolve(__dirname, "src/styles"),
-        "@types": resolve(__dirname, "src/types"),
         "@utils": resolve(__dirname, "src/utils"),
         "@views": resolve(__dirname, "src/views"),
       },
