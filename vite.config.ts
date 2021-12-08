@@ -2,11 +2,18 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import WindiCSS from "vite-plugin-windicss";
+import ViteComponents, { AntDesignVueResolver } from "vite-plugin-components";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname);
   return {
-    plugins: [vue(), WindiCSS()],
+    plugins: [
+      vue(),
+      WindiCSS(),
+      ViteComponents({
+        customComponentResolvers: [AntDesignVueResolver()],
+      }),
+    ],
     server: {
       proxy: {
         "/api": {

@@ -16,9 +16,6 @@ watch(
   () => route.meta,
   async (meta) => {
     switch (meta.layout) {
-      case "basic":
-        layout.value = Basic;
-        break;
       case "blank":
         layout.value = Blank;
         break;
