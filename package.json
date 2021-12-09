@@ -2,14 +2,15 @@
   "name": "gess",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --mode development",
-    "mock": "vite --mode mock",
+    "dev": "vite --mode development --host",
+    "mock": "vite --mode mock --host",
     "build": "vue-tsc --mode production --noEmit && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
     "ant-design-vue": "^3.0.0-alpha.14",
     "axios": "^0.24.0",
+    "crypto-js": "^4.1.1",
     "vue": "^3.2.16",
     "vue-router": "4",
     "vuex": "4"
