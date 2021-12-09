@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="login-page bg-cover w-full h-full flex justify-center items-center"
-  >
+  <div class="login-page bg-cover h-full flex justify-center items-center">
     <div
       class="
         w-375px
@@ -16,7 +14,7 @@
       <p class="mb-3 text-3xl font-medium">考研分享平台</p>
       <p class="text-gray-500 mb-8">用户登录</p>
       <a-form
-        :ref="formRef"
+        ref="formRef"
         :model="loginForm"
         :rules="loginRules"
         @finish="handleLogin"
@@ -73,9 +71,14 @@
 <script setup lang="ts">
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
 import { ref, reactive, UnwrapRef } from "vue";
+import CryptoJS from "crypto-js";
 import type { RuleObject } from "ant-design-vue/es/form";
+import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
 import type { UserForm } from "@/types/user";
 import http from "@/apis/request";
+
+const router = useRouter();
 
 // 登录注册状态
 let isLoginState = ref(true);
@@ -128,8 +131,13 @@ const loginRules = {
 };
 const handleLogin = (values: UserForm) => {
   if (isLoginState.value) {
-    http.post("/login", values).then((res) => {});
+    // http.post("/login", values).then((res) => {});
+    message.success("登陆成功");
+    console.log(message);
+    router.push("/");
   } else {
+    message.success("注册成功");
+    changePageState();
   }
 };
 </script>

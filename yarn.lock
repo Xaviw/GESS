@@ -124,6 +124,11 @@
     core-js "^3.15.1"
     nanopop "^2.1.0"
 
+"@types/crypto-js@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/@types/crypto-js/download/@types/crypto-js-4.0.2.tgz#4524325a175bf819fec6e42560c389ce1fb92c97"
+  integrity sha1-RSQyWhdb+Bn+xuQlYMOJzh+5LJc=
+
 "@types/lodash@^4.14.165":
   version "4.14.177"
   resolved "https://registry.npmmirror.com/@types/lodash/download/@types/lodash-4.14.177.tgz?cache=0&sync_timestamp=1637266510679&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.177.tgz#f70c0d19c30fab101cad46b52be60363c43c4578"

@@ -16,6 +16,7 @@
     "vuex": "4"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.0.2",
     "@types/node": "^16.11.11",
     "@vitejs/plugin-vue": "^1.9.3",
     "@windicss/plugin-scrollbar": "^1.2.3",
