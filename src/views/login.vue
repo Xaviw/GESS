@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page bg-cover h-full flex justify-center items-center">
+  <div class="login-bg bg-cover h-full flex justify-center items-center">
     <div
       class="
         w-375px
@@ -141,9 +141,3 @@ const handleLogin = (values: UserForm) => {
   }
 };
 </script>
-
-<style>
-.login-page {
-  background-image: url("@/assets/login-background.jpg");
-}
-</style>

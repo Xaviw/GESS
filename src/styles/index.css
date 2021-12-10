@@ -2,3 +2,12 @@
   width: 100vw;
   height: 100vh;
 }
+.login-bg {
+  background-image: url("@/assets/login-background.jpg");
+}
+.top-bg {
+  background-image: url("@/assets/top.jpg");
+}
+.max-area {
+  @apply w-full max-w-6xl mx-auto px-4;
+}

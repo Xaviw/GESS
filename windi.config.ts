@@ -9,6 +9,7 @@ export default defineConfig({
   theme: {
     screens: {
       mobile: "425px",
+      small: "850px",
     },
   },
 });
