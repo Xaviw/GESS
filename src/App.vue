@@ -9,7 +9,7 @@ import { useRoute } from "vue-router";
 import Basic from "@/layouts/basic.vue";
 import Blank from "@/layouts/blank.vue";
 
-const layout = ref(null);
+const layout = ref();
 const route = useRoute();
 
 watch(

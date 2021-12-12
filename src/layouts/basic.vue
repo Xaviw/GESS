@@ -5,65 +5,38 @@ import {
   BellOutlined,
   MenuOutlined,
 } from "@ant-design/icons-vue";
+import menu from "@/assets/menu";
 
 const appTitle = import.meta.env.VITE_APP_TITLE;
-const menu = [
-  {
-    key: "zt",
-    title: "真题区",
-    children: [
-      { key: "kyzt", title: "考研真题" },
-      { key: "fszt", title: "复试真题" },
-    ],
-  },
-  {
-    key: "zy",
-    title: "资源区",
-    children: [
-      { key: "zxzy", title: "最新资源" },
-      { key: "fszy", title: "复试资源" },
-    ],
-  },
-  {
-    key: "bj",
-    title: "笔记区",
-    children: [
-      { key: "zzgh", title: "政治干货" },
-      { key: "sxgh", title: "数学干货" },
-      { key: "yygh", title: "英语干货" },
-      { key: "qtbj", title: "其他笔记" },
-    ],
-  },
-  {
-    key: "yx",
-    title: "院校区",
-    children: [
-      { key: "tkzy", title: "统考资源" },
-      { key: "lqsj", title: "录取数据" },
-      { key: "fsx", title: "分数线" },
-    ],
-  },
-  {
-    key: "bz",
-    title: "帮助区",
-    children: [
-      { key: "cjwt", title: "常见问题" },
-      { key: "zxwd", title: "在线问答" },
-      { key: "dksa", title: "打卡上岸" },
-    ],
-  },
-];
+
 let searchValue = ref("");
 
 let sideDrawerVisible = ref(false);
 
-window.addEventListener("scroll", (e) => {
-  console.log(e);
+let last_known_scroll_position = 0;
+let ticking = false;
+
+function doSomething(scroll_pos: any) {
+  console.log("scroll_pos: ", scroll_pos);
+  // 根据滚动位置做的事
+}
+
+window.addEventListener("scroll", function (e) {
+  last_known_scroll_position = window.scrollY;
+
+  if (!ticking) {
+    window.requestAnimationFrame(function () {
+      doSomething(last_known_scroll_position);
+      ticking = false;
+    });
+
+    ticking = true;
+  }
 });
 </script>
 
 <template>
-  <div>
+  <div class="scroll-container min-h-full flex flex-col justify-between">
     <div
       class="
         top-bg
@@ -180,10 +153,14 @@ window.addEventListener("scroll", (e) => {
         <span class="mx-4">资源总数：113356</span>
       </div>
     </div>
-    <div class="max-area h-7xl">
+    <div class="max-area flex-grow h-7xl">
       <router-view></router-view>
     </div>
-    <div class="max-area"></div>
+    <div
+      class="bg-blue-gray-600 text-center text-light-50 tracking-widest py-4"
+    >
+      - 考研分享平台 -
+    </div>
   </div>
 
   <a-drawer v-model:visible="sideDrawerVisible" width="300px" placement="right">
