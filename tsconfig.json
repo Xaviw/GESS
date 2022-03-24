@@ -5,7 +5,8 @@
       "@/*": ["src/*"],
       "@comps/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
-      "@views/*": ["src/views/*"]
+      "@views/*": ["src/views/*"],
+      "@apis/*": ["src/request/*"]
     },
     "target": "esnext",
     "useDefineForClassFields": true,

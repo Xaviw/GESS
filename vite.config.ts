@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
-import WindiCSS from "vite-plugin-windicss";
 import ViteComponents, { AntDesignVueResolver } from "vite-plugin-components";
 
 export default defineConfig(({ mode }) => {
@@ -9,7 +8,6 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vue(),
-      WindiCSS(),
       ViteComponents({
         customComponentResolvers: [AntDesignVueResolver()],
       }),
@@ -26,6 +24,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "src"),
+        "@apis": resolve(__dirname, "src/request"),
         "@comps": resolve(__dirname, "src/components"),
         "@utils": resolve(__dirname, "src/utils"),
         "@views": resolve(__dirname, "src/views"),

@@ -1,25 +1,27 @@
 interface Storage {
   value: any;
-  expires?: string | number;
-  startTime?: string | number;
+  expires?: number;
+  startTime?: number;
 }
 
 // localStorage
 const local = {
-  //存储,可设置过期时间
+  /**
+   * 存储LocalStorage
+   * @param key 名称
+   * @param value 值
+   * @param expires 过期时间，毫秒ms
+   */
   set(key: string, value: any, expires?: number): void {
+    let data: Storage = { value };
     if (expires) {
-      let data: Storage = { value, expires, startTime: Date.now() };
-      localStorage.setItem(key, JSON.stringify(data));
-    } else {
-      if (typeof value === "object") {
-        value = JSON.stringify(value);
-      }
-      localStorage.setItem(key, value);
+      data = { ...data, expires, startTime: Date.now() };
     }
+    localStorage.setItem(key, JSON.stringify(data));
   },
+
   //取出
-  get(key: string): string | object | undefined {
+  get(key: string): any {
     let item = localStorage.getItem(key);
     if (!item) return;
     let res: Storage = JSON.parse(item);
@@ -27,20 +29,23 @@ const local = {
     if (res?.startTime && res?.expires) {
       let date = Date.now();
       // 如果大于就是过期了，如果小于或等于就还没过期
-      if (date - Number(res.startTime) > res.expires) {
+      if (date - res.startTime > res.expires) {
         localStorage.removeItem(key);
         return;
       }
     }
-    return res;
+    return res.value;
   },
+
   // 删除
   remove(key: string): void {
     localStorage.removeItem(key);
   },
+
   // 清除全部
   clear(): void {
     localStorage.clear();
   },
 };
+
 export { local };

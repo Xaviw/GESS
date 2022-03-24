@@ -1,28 +1,24 @@
 <template>
-  <component :is="layout"> </component>
+  <component :is="layout">
+    <router-view></router-view>
+  </component>
 </template>
 
-<script lang="ts" setup>
-import { ref, watch } from "vue";
+<script setup lang="ts">
+import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
+import { initUserState } from "./utils";
 
-import Basic from "@/layouts/basic.vue";
-import Blank from "@/layouts/blank.vue";
+const appTitle = import.meta.env.VITE_APP_TITLE;
+provide("appTitle", appTitle);
 
-const layout = ref();
+const modules = import.meta.globEager("./layouts/*.vue");
+
 const route = useRoute();
 
-watch(
-  () => route.meta,
-  async (meta) => {
-    switch (meta.layout) {
-      case "blank":
-        layout.value = Blank;
-        break;
-      default:
-        layout.value = Basic;
-    }
-  },
-  { immediate: true }
-);
+let layout = computed(() => {
+  return modules[`./layouts/${route.meta.layout}.vue`]?.default;
+});
+
+initUserState();
 </script>
