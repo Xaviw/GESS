@@ -7,6 +7,7 @@ interface IState {
   userInfo: IUserInfo | null;
   role: ROLE;
   tags: IFirTag[];
+  currentMenu: string[];
 }
 
 export default createStore<IState>({
@@ -15,6 +16,7 @@ export default createStore<IState>({
     userInfo: null,
     role: ROLE.user,
     tags: [],
+    currentMenu: [],
   },
   mutations: {
     modify(state: IState, payload: Partial<IState>) {
@@ -25,6 +27,12 @@ export default createStore<IState>({
           console.error("Vuex更新失败：属性" + e + "在state中未定义！");
         }
       });
+    },
+    initTags(state: IState, tags: IFirTag[]) {
+      state.tags = tags;
+      if (tags?.[0].children?.[0].id) {
+        state.currentMenu = [tags[0].children[0].id];
+      }
     },
   },
 });

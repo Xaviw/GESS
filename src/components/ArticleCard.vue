@@ -1,5 +1,10 @@
 <template>
   <a-card hoverable bordered class="article-card">
+    <div class="tag">
+      <a-tag v-for="(tag, index) in data.tags" :color="COLOR[index % 7]">{{
+        tag.name
+      }}</a-tag>
+    </div>
     <template #cover>
       <img src="../assets/fmt.jpg" style="border: 1px solid #eee" />
     </template>
@@ -11,7 +16,7 @@
         </div>
       </template>
       <template #description>
-        <div class="flex-between">
+        <div class="flex-around">
           <span class="flex-between"
             ><Icon icon="ant-design:calendar-outlined" />{{
               relTime(data.createTime)
@@ -35,15 +40,26 @@ import { Icon } from "@iconify/vue";
 import { relTime } from "@utils/index";
 
 defineProps<{ data: IArticleInfo }>();
+
+const COLOR = ["pink", "red", "orange", "green", "cyan", "blue", "purple"];
 </script>
 
 <style scoped lang="less">
 .article-card {
   width: 300px;
   margin: 0 10px 40px 10px;
+  position: relative;
+  .tag {
+    position: absolute;
+    top: 3px;
+    right: -5px;
+  }
 }
 
 :deep(.ant-card-body) {
   padding: 20px 20px 0 20px;
+}
+:deep(.ant-card-meta-detail) {
+  text-align: center;
 }
 </style>

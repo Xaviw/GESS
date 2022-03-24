@@ -1,13 +1,30 @@
 <script setup lang="ts">
-import { IFirTag, ISecTag } from "@/types/common";
 import { Icon } from "@iconify/vue";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { myStore } from "../store";
 
 const store = myStore();
 const tags = computed(() => store.state.tags);
-const curFir = ref(0);
-const curSec = ref(0);
+const curFir: any = computed(() =>
+  tags.value.findIndex(
+    (item) =>
+      item.children.some((item) => item.id === store.state.currentMenu[0]) || 0
+  )
+);
+const curSec = computed({
+  get() {
+    return (
+      tags.value[curFir.value]?.children.findIndex(
+        (item) => item.id === store.state.currentMenu[0]
+      ) || 0
+    );
+  },
+  set(value) {
+    store.commit("modify", {
+      currentMenu: [value],
+    });
+  },
+});
 </script>
 
 <template>
@@ -26,10 +43,7 @@ const curSec = ref(0);
             v-for="(item, index) in tags"
             :key="item.id"
             :class="{ active: index === curFir }"
-            @click="
-              curFir = index;
-              curSec = 0;
-            "
+            @click="curSec = item.children[0].id"
             >{{ item.name }}</a-button
           >
         </div>
@@ -47,7 +61,7 @@ const curSec = ref(0);
             v-for="(item, index) in tags[curFir]?.children"
             :key="item.id"
             :class="{ active: index == curSec }"
-            @click="curSec = index"
+            @click="curSec = item.id"
             >{{ item.name }}</a-button
           >
         </div>

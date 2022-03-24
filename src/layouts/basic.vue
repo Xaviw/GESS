@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, inject, provide, ref } from "vue";
+import { computed, inject, provide, ref, watch } from "vue";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { getTags } from "@/request/apis";
 import type { IFirTag } from "@/types/common";
-import { redirectToLogin } from "@utils/index";
+import { navigateIfLogin, redirectToLogin } from "@utils/index";
 import { myStore } from "@/store";
 import { handleLogout } from "@/utils";
 import { useRouter } from "vue-router";
@@ -18,11 +18,24 @@ if (store.state.tags.length) {
 } else {
   getTags().then(([res]) => {
     menu.value = res;
-    store.commit("modify", { tags: res });
+    store.commit("initTags", res);
   });
 }
 
 let userInfo = computed(() => store.state.userInfo);
+
+let selectedKeys = computed({
+  get() {
+    return store.state.currentMenu;
+  },
+  set(value) {
+    store.commit("modify", { currentMenu: value });
+  },
+});
+
+const publish = () => {
+  navigateIfLogin("/publish");
+};
 </script>
 
 <template>
@@ -35,6 +48,7 @@ let userInfo = computed(() => store.state.userInfo);
             mode="horizontal"
             class="flex-center"
             style="border-bottom: none"
+            v-model:selectedKeys="selectedKeys"
           >
             <template v-for="item in menu" :key="item.id">
               <template v-if="!item.children?.length">
@@ -58,6 +72,10 @@ let userInfo = computed(() => store.state.userInfo);
         </div>
 
         <div class="flex-center">
+          <a-menu mode="horizontal ">
+            <a-menu-item key="forum">论坛</a-menu-item>
+            <a-menu-item key="publish" @click="publish">发布文章</a-menu-item>
+          </a-menu>
           <search-outlined class="search" />
           <a-divider type="vertical" style="height: 20px" />
           <a-button type="primary" @click="redirectToLogin" v-if="!userInfo"
@@ -74,9 +92,6 @@ let userInfo = computed(() => store.state.userInfo);
             </div>
             <template #overlay>
               <a-menu>
-                <a-menu-item>
-                  <a href="javascript:;">上传文章</a>
-                </a-menu-item>
                 <a-menu-item>
                   <router-link to="/personal">个人中心</router-link>
                 </a-menu-item>
@@ -99,6 +114,13 @@ let userInfo = computed(() => store.state.userInfo);
 </template>
 
 <style lang="less" scoped>
+:deep(.ant-menu-horizontal) {
+  border-bottom: none;
+  margin-right: 32px;
+}
+:deep(.ant-menu-item-selected) {
+  border: none;
+}
 .body {
   min-height: 100vh;
   display: flex;

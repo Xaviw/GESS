@@ -14,29 +14,26 @@
 <script setup lang="ts">
 import CascadeMenu from "@/components/CascadeMenu.vue";
 import { getArticle } from "@/request/apis";
+import { myStore } from "@/store";
 import { IArticleInfo } from "@/types/common";
-import { ref, toRaw } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, watchEffect } from "vue";
 
-const route = useRoute();
-console.log("route: ", toRaw(route));
-let type = route.query.type as string;
-if (!type) {
-  useRouter().back();
-}
+const store = myStore();
 
-const queryParam = {
-  page: 1,
-  pageSize: 999,
-  type,
-};
 let list = ref<IArticleInfo[]>([]);
-const handleSearch = () => {
-  getArticle(queryParam).then(([res]) => {
+const handleSearch = (param: any) => {
+  getArticle(param).then(([res]) => {
     list.value = res.data;
   });
 };
-handleSearch();
+watchEffect(() => {
+  const queryParam = {
+    page: 1,
+    pageSize: 999,
+    type: store.state.currentMenu[0],
+  };
+  handleSearch(queryParam);
+});
 </script>
 
 <style lang="less" scoped>
