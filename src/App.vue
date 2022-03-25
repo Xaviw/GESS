@@ -1,4 +1,5 @@
 <template>
+  <a-back-top />
   <component :is="layout">
     <router-view></router-view>
   </component>
