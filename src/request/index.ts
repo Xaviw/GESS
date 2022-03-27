@@ -111,10 +111,12 @@ export async function http<Res>(
   data?: object
 ): Promise<[Res, AxiosResponse<IResponse<Res>>]> {
   let result;
-  if (data) {
-    result = await instance[method]<IResponse<Res>>(url, data);
+  if (data && method == "post") {
+    result = await instance.post<IResponse<Res>>(url, data);
+  } else if (data && method == "get") {
+    result = await instance.get<IResponse<Res>>(url, { params: data });
   } else {
     result = await instance[method]<IResponse<Res>>(url);
   }
-  return [result.data.data, result];
+  return [result?.data?.data, result];
 }

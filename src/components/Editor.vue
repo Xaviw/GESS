@@ -4,16 +4,23 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import WangEditor from "wangeditor";
 
 defineProps<{ canEdit: boolean; data?: string }>();
 
+let editor: any;
+
 onMounted(() => {
   const E = WangEditor;
-  const editor = new E("#toolbar-container", "#text-container");
+  editor = new E("#toolbar-container", "#text-container");
+  editor.config.uploadImgServer = "/article/uploadArticleImage";
   editor.create();
 });
+
+const getJSON = () => editor.txt.getJSON();
+
+defineExpose({ getJSON });
 </script>
 
 <style scoped lang="less">

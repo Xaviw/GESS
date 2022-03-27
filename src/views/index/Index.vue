@@ -1,22 +1,52 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useIntersectionObserver } from "@vueuse/core";
+import { onUnmounted, ref, watch, watchEffect } from "vue";
 import ArticleCard from "@/components/ArticleCard.vue";
 import { getArticle } from "@/request/apis";
 import { IArticleInfo } from "@/types/common";
 
 let keyWord = ref("");
+let currentKey = "";
+const target = ref<HTMLElement | null>(null);
+const targetIsVisible = ref(false);
+
+const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
+  targetIsVisible.value = isIntersecting;
+});
+
 const queryParam = {
   page: 1,
-  pageSize: 999,
+  pageSize: 20,
   type: "0",
+  keyword: currentKey,
 };
+let total = 0;
 let list = ref<IArticleInfo[]>([]);
 const handleSearch = () => {
+  if (keyWord.value !== currentKey) {
+    queryParam.page = 1;
+    total = 0;
+    currentKey = keyWord.value;
+    list.value = [];
+  }
   getArticle(queryParam).then(([res]) => {
-    list.value = res.data;
+    list.value.push(...res.data);
+    if (res.total !== total) {
+      total = res.total;
+    }
   });
 };
 handleSearch();
+watch(targetIsVisible, () => {
+  if (targetIsVisible.value && list.value.length < total) {
+    queryParam.page++;
+    handleSearch();
+  }
+});
+
+onUnmounted(() => {
+  stop();
+});
 </script>
 
 <template>
@@ -47,7 +77,7 @@ handleSearch();
       <div class="anchor"></div>
       <div class="anchor"></div>
       <div class="anchor"></div>
-      <div class="anchor"></div>
+      <div class="anchor" ref="target"></div>
     </div>
   </div>
 </template>

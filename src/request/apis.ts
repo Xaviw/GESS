@@ -35,7 +35,10 @@ const getMyArticle = (data: IPageQuery) =>
   http<IPageData<IArticle>>("get", "/article/getSelfUploadArticle", data);
 
 const getArticle = (data: IPageQuery & { keyword?: string; type?: string }) =>
-  http<IPageData<IArticleInfo>>("get", "/article/getArticle");
+  http<IPageData<IArticleInfo>>("get", "/article/getArticle", data);
+
+const uploadArticle = (data: any) =>
+  http("post", "/article/uploadArticle", data);
 
 export {
   getTags,

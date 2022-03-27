@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/category",
-    component: () => import("@views/listOfTag/Index.vue"),
+    component: () => import("@views/category/Index.vue"),
   },
   {
     path: "/publish",

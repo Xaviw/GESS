@@ -6,11 +6,12 @@ import type { IFirTag } from "@/types/common";
 import { navigateIfLogin, redirectToLogin } from "@utils/index";
 import { myStore } from "@/store";
 import { handleLogout } from "@/utils";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const appTitle = inject("appTitle");
 const store = myStore();
 const router = useRouter();
+const route = useRoute();
 
 let menu = ref<IFirTag[]>([]);
 if (store.state.tags.length) {
@@ -18,7 +19,15 @@ if (store.state.tags.length) {
 } else {
   getTags().then(([res]) => {
     menu.value = res;
-    store.commit("initTags", res);
+    if (route.path == "/category") {
+      let param: any = { data: res };
+      if (route.query.type) {
+        param.target = route.query.type;
+      }
+      store.commit("initTags", param);
+    } else {
+      store.commit("modify", { tags: res });
+    }
   });
 }
 

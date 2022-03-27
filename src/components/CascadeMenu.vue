@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { myStore } from "../store";
 
 const store = myStore();
+const router = useRouter();
 const tags = computed(() => store.state.tags);
 const curFir: any = computed(() =>
   tags.value.findIndex(
@@ -19,7 +21,8 @@ const curSec = computed({
       ) || 0
     );
   },
-  set(value) {
+  set(value: any) {
+    router.replace({ query: { type: value } });
     store.commit("modify", {
       currentMenu: [value],
     });

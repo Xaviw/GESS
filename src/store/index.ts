@@ -28,10 +28,14 @@ export default createStore<IState>({
         }
       });
     },
-    initTags(state: IState, tags: IFirTag[]) {
-      state.tags = tags;
-      if (tags?.[0].children?.[0].id) {
-        state.currentMenu = [tags[0].children[0].id];
+    initTags(state: IState, tags: { data: IFirTag[]; target?: string }) {
+      state.tags = tags.data;
+      if (tags.target) {
+        state.currentMenu = [tags.target];
+      } else {
+        if (tags.data?.[0].children?.[0].id) {
+          state.currentMenu = [tags.data[0].children[0].id];
+        }
       }
     },
   },
