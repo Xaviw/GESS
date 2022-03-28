@@ -38,10 +38,9 @@
 import { IArticleInfo } from "@/types/common";
 import { Icon } from "@iconify/vue";
 import { relTime } from "@utils/index";
+import { COLOR } from "@utils/index";
 
 defineProps<{ data: IArticleInfo }>();
-
-const COLOR = ["pink", "red", "orange", "green", "cyan", "blue", "purple"];
 </script>
 
 <style scoped lang="less">

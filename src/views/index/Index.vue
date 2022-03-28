@@ -4,6 +4,7 @@ import { onUnmounted, ref, watch, watchEffect } from "vue";
 import ArticleCard from "@/components/ArticleCard.vue";
 import { getArticle } from "@/request/apis";
 import { IArticleInfo } from "@/types/common";
+import { useRouter } from "vue-router";
 
 let keyWord = ref("");
 let currentKey = "";
@@ -13,6 +14,11 @@ const targetIsVisible = ref(false);
 const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
   targetIsVisible.value = isIntersecting;
 });
+
+const router = useRouter();
+const gotoDetail = (id: string) => {
+  router.push(`/article/${id}`);
+};
 
 const queryParam = {
   page: 1,
@@ -73,7 +79,12 @@ onUnmounted(() => {
     <p>你的前景，远超我们想象</p>
     <em class="divider"></em>
     <div class="article-area">
-      <ArticleCard v-for="item in list" :key="item.id" :data="item" />
+      <ArticleCard
+        v-for="item in list"
+        :key="item.id"
+        :data="item"
+        @click="gotoDetail(item.id)"
+      />
       <div class="anchor"></div>
       <div class="anchor"></div>
       <div class="anchor"></div>

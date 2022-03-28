@@ -85,8 +85,6 @@ const publish = () => {
             <a-menu-item key="forum">论坛</a-menu-item>
             <a-menu-item key="publish" @click="publish">发布文章</a-menu-item>
           </a-menu>
-          <search-outlined class="search" />
-          <a-divider type="vertical" style="height: 20px" />
           <a-button type="primary" @click="redirectToLogin" v-if="!userInfo"
             ><user-outlined />登录</a-button
           >

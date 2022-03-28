@@ -42,6 +42,10 @@ const routes: RouteRecordRaw[] = [
     path: "/publish",
     component: () => import("@views/publish/Index.vue"),
   },
+  {
+    path: "/article/:id",
+    component: () => import("@views/article/Index.vue"),
+  },
 ];
 
 // routes添加默认layout

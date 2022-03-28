@@ -68,14 +68,27 @@ export interface IArticle {
 
 export interface IArticleInfo {
   id: string;
+  articleId: string;
   userName: string;
+  userId: string;
   createTime: string;
   face?: string;
   title: string;
   url: string;
   views: number;
   likes: number;
+  isLikes: 0 | 1;
   tags: { id: string; name: string }[];
+  content: string;
+  comment?: {
+    id: string;
+    userId: string;
+    userName: string;
+    createTime: string;
+    comment: string;
+    parentName?: string;
+    face: string;
+  }[];
 }
 
 export interface IPageQuery {

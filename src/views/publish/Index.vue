@@ -21,7 +21,7 @@
             class="w300 inline-block"
             mode="multiple"
             placeholder="请选择相关标签"
-            :options="[]"
+            :options="tagOptions"
           ></a-select>
         </p>
       </div>
@@ -41,19 +41,48 @@
       </div>
     </div>
 
-    <Editor :canEdit="true" ref="editorEl" />
+    <Editor :canEdit="true" :data="data" ref="editorEl" />
   </div>
 </template>
 
 <script setup lang="ts">
 import Editor from "@/components/Editor.vue";
-import { ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import { getArticleDetail, uploadArticle } from "@/request/apis";
+import { myStore } from "@/store";
+import { useRoute, useRouter } from "vue-router";
+import { watch } from "vue";
+
+const router = useRouter();
+const route = useRoute();
+let data = ref();
+watchEffect(() => {
+  if (route.query.id) {
+    getArticleDetail(route.query.id as string).then(([res]) => {
+      data.value = res.content;
+      title.value = res.title;
+      tags.value = res.tags.map((item) => item.id);
+    });
+  }
+});
 
 const editorEl = ref<any>(null);
 let title = ref("");
-let tags = ref([]);
+
+const store = myStore();
+let tags = ref<any[]>([]);
+let tagOptions = computed<any[]>(() => {
+  let data: any[] = [];
+  store.state.tags.map((item) => data.push(...item.children));
+  data.forEach((item) => {
+    item.label = item.name;
+    item.value = item.id;
+  });
+  return data;
+});
+
 let fileList = ref<any[]>([]);
 let formData = new FormData();
 
@@ -85,6 +114,17 @@ const publish = () => {
   formData.append("title", title.value);
   formData.append("tags", JSON.stringify(tags.value));
   formData.append("content", JSON.stringify(content));
+  if (route.query.id) {
+    formData.append("id", route.query.id as string);
+  }
+  uploadArticle(formData).then(
+    ([res]) => {
+      router.push("/article/" + res);
+    },
+    () => {
+      formData = new FormData();
+    }
+  );
 };
 </script>
 
@@ -108,6 +148,7 @@ h2 {
 }
 .w300 {
   width: 300px;
+  max-width: 70vw;
 }
 .inline-block {
   display: inline-block;

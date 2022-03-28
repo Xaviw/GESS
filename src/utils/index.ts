@@ -100,6 +100,8 @@ const navigateIfLogin = (target: string, resetMenu: boolean = true) => {
   // }
 };
 
+const COLOR = ["pink", "red", "orange", "green", "cyan", "blue", "purple"];
+
 export {
   globalMessage,
   redirectToLogin,
@@ -108,4 +110,5 @@ export {
   getBase64,
   relTime,
   navigateIfLogin,
+  COLOR,
 };

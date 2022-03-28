@@ -1,13 +1,13 @@
 <template>
-  <div id="toolbar-container" v-show="canEdit"></div>
+  <div id="toolbar-container" v-show="props.canEdit"></div>
   <div id="text-container"></div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, watchEffect } from "vue";
 import WangEditor from "wangeditor";
 
-defineProps<{ canEdit: boolean; data?: string }>();
+const props = defineProps<{ canEdit: boolean; data?: string }>();
 
 let editor: any;
 
@@ -15,7 +15,21 @@ onMounted(() => {
   const E = WangEditor;
   editor = new E("#toolbar-container", "#text-container");
   editor.config.uploadImgServer = "/article/uploadArticleImage";
+  editor.config.zIndex = 1040;
   editor.create();
+  watchEffect(() => {
+    if (props.data) {
+      editor.txt.setJSON(JSON.parse(props.data));
+    }
+  });
+
+  watchEffect(() => {
+    if (props.canEdit) {
+      editor.enable();
+    } else {
+      editor.disable();
+    }
+  });
 });
 
 const getJSON = () => editor.txt.getJSON();
