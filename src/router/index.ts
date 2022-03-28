@@ -46,6 +46,10 @@ const routes: RouteRecordRaw[] = [
     path: "/article/:id",
     component: () => import("@views/article/Index.vue"),
   },
+  {
+    path: "/forum",
+    component: () => import("@views/forum/Index.vue"),
+  },
 ];
 
 // routes添加默认layout

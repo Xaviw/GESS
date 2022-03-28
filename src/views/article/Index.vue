@@ -56,6 +56,7 @@
       </div>
     </div>
     <Editor :canEdit="false" :data="data?.content" />
+    <Enclosure :file="data?.url" />
     <CommentList :comments="data?.comment || []" />
   </div>
 </template>

@@ -100,3 +100,15 @@ export interface IPageData<T> {
   total: number;
   data: T[];
 }
+
+export interface INoticeData {
+  userId: string;
+  userName: string;
+  objectId: string;
+  createTime: TimeRanges;
+  title: string;
+  content: string;
+  views: number;
+  likes: number;
+  face?: string;
+}

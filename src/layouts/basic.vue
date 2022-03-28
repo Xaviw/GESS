@@ -45,6 +45,10 @@ let selectedKeys = computed({
 const publish = () => {
   navigateIfLogin("/publish");
 };
+
+const gotoForum = () => {
+  router.push("/forum");
+};
 </script>
 
 <template>
@@ -82,7 +86,7 @@ const publish = () => {
 
         <div class="flex-center">
           <a-menu mode="horizontal ">
-            <a-menu-item key="forum">论坛</a-menu-item>
+            <a-menu-item key="forum" @click="gotoForum">论坛</a-menu-item>
             <a-menu-item key="publish" @click="publish">发布文章</a-menu-item>
           </a-menu>
           <a-button type="primary" @click="redirectToLogin" v-if="!userInfo"

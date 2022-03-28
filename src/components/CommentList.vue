@@ -106,6 +106,8 @@ const handleReply = () => {
     parentId: replyContent.value,
     comment: replyContent.value,
     type: 1,
+  }).then(() => {
+    replyContent.value = "";
   });
 };
 </script>

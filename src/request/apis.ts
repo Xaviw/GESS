@@ -2,6 +2,7 @@ import type {
   IArticle,
   IArticleInfo,
   IFirTag,
+  INoticeData,
   IPageData,
   IPageQuery,
   IUserForm,
@@ -56,6 +57,8 @@ const comment = (data: {
   type: number;
 }) => http("post", "/comment/commentArticle");
 
+const getNotice = (data: IPageQuery & { type: number }) =>
+  http<IPageData<INoticeData>>("get", "/notice/getNotice", data);
 export {
   getTags,
   register,
@@ -70,4 +73,5 @@ export {
   likes,
   deleteArticle,
   comment,
+  getNotice,
 };
