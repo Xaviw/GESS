@@ -72,6 +72,9 @@ const deleteComment = (data: { type: number; id: string }) =>
 const getSensitiveWords = () =>
   http<{ id: string; word: string }[]>("get", "/tags/updateSensitives");
 
+const deleteTag = (data: { id: string; isParent: number }) =>
+  http("post", "/tags/delTags");
+
 export {
   getTags,
   register,
@@ -91,4 +94,5 @@ export {
   getNoticeDetail,
   deleteComment,
   getSensitiveWords,
+  deleteTag,
 };

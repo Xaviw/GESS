@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, provide, ref, watch } from "vue";
+import { computed, inject, provide, ref, watch, watchEffect } from "vue";
 import { UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import { getTags } from "@/request/apis";
 import type { IFirTag } from "@/types/common";
@@ -14,12 +14,8 @@ const store = myStore();
 const router = useRouter();
 const route = useRoute();
 
-let menu = ref<IFirTag[]>([]);
-if (store.state.tags.length) {
-  menu.value = store.state.tags;
-} else {
+if (!store.state.tags.length) {
   getTags().then(([res]) => {
-    menu.value = res;
     if (route.path == "/category") {
       let param: any = { data: res };
       if (route.query.type) {
@@ -31,6 +27,12 @@ if (store.state.tags.length) {
     }
   });
 }
+
+let menu = computed(() => store.state.tags);
+
+watch(menu, (v, v2) => {
+  console.log(v, v2);
+});
 
 let userInfo = computed(() => store.state.userInfo);
 

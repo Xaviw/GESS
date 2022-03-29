@@ -145,7 +145,7 @@ const publish = () => {
     });
   } else {
     formData.append("title", title.value);
-    formData.append("tags", JSON.stringify(tags.value));
+    formData.append("tags", tags.value.join(","));
     formData.append("content", JSON.stringify(content));
     if (route.query.id) {
       formData.append("id", route.query.id as string);
