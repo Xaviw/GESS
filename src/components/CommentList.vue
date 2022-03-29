@@ -37,6 +37,16 @@
           >回复</a-button
         >
       </span>
+      <a-button
+        danger
+        type="link"
+        @click="handleDeleteComment(item.id)"
+        v-if="
+          item.userId == store.state.userInfo?.id ||
+          store.state.role == ROLE.administrator
+        "
+        >删除</a-button
+      >
     </template>
     <template #author
       ><a
@@ -70,9 +80,10 @@ import { relTime } from "@/utils";
 import { message } from "ant-design-vue";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { comment } from "@apis/apis";
+import { comment, deleteComment } from "@apis/apis";
+import { ROLE } from "@/types/common";
 
-defineProps<{
+const props = defineProps<{
   comments: {
     id: string;
     userId: string;
@@ -82,7 +93,10 @@ defineProps<{
     parentName?: string;
     face?: string;
   }[];
+  type: number;
 }>();
+
+const emit = defineEmits<{ (e: "updateComments", id: string): void }>();
 
 const router = useRouter();
 const route = useRoute();
@@ -92,12 +106,12 @@ let replyId = ref("");
 let replyContent = ref("");
 
 const reply = (id: string) => {
-  replyId.value = id;
-  // if (store.state.alreadyLogin) {
-  // } else {
-  //   message.warn("请先登录！");
-  //   router.push(`/login?redirect=${route.fullPath}`);
-  // }
+  if (store.state.alreadyLogin) {
+    replyId.value = id;
+  } else {
+    message.warn("请先登录！");
+    router.push(`/login?redirect=${route.fullPath}`);
+  }
 };
 
 const handleReply = () => {
@@ -105,9 +119,16 @@ const handleReply = () => {
     objectId: route.params.id as string,
     parentId: replyContent.value,
     comment: replyContent.value,
-    type: 1,
+    type: props.type,
   }).then(() => {
     replyContent.value = "";
+  });
+};
+
+const handleDeleteComment = (id: string) => {
+  console.log("id: ", id);
+  deleteComment({ type: props.type, id }).then(() => {
+    emit("updateComments", id);
   });
 };
 </script>

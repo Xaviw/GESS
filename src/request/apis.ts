@@ -55,10 +55,23 @@ const comment = (data: {
   parentId?: string;
   comment: string;
   type: number;
-}) => http("post", "/comment/commentArticle");
+}) => http("post", "/comment/commentArticle", data);
 
 const getNotice = (data: IPageQuery & { type: number }) =>
   http<IPageData<INoticeData>>("get", "/notice/getNotice", data);
+
+const addNotice = (data: { title: string; content: string; type: number }) =>
+  http("post", "/notice/addNotice", data);
+
+const getNoticeDetail = (id: string) =>
+  http<IArticleInfo>("get", "/notice/getNoticeById", { id });
+
+const deleteComment = (data: { type: number; id: string }) =>
+  http("post", "/comment/deleteComment", data);
+
+const getSensitiveWords = () =>
+  http<{ id: string; word: string }[]>("get", "/tags/updateSensitives");
+
 export {
   getTags,
   register,
@@ -74,4 +87,8 @@ export {
   deleteArticle,
   comment,
   getNotice,
+  addNotice,
+  getNoticeDetail,
+  deleteComment,
+  getSensitiveWords,
 };

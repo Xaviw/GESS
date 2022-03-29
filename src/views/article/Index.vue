@@ -31,8 +31,12 @@
           v-for="(tag, index) in data?.tags"
           :color="COLOR[index % 7]"
           class="mr-20"
+          v-if="!isInfo"
           >{{ tag.name }}</a-tag
         >
+        <a-tag :color="COLOR[0]" class="mr-20" v-else>{{
+          infoTags[data?.type!]
+        }}</a-tag>
       </div>
       <div class="flex-between">
         <span class="flex-between mr-20">
@@ -56,14 +60,23 @@
       </div>
     </div>
     <Editor :canEdit="false" :data="data?.content" />
-    <Enclosure :file="data?.url" />
-    <CommentList :comments="data?.comment || []" />
+    <Enclosure :file="data?.url" v-if="!isInfo" />
+    <CommentList
+      :comments="data?.comment || []"
+      :type="isInfo ? 0 : 1"
+      @updateComments="updateComments"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { IArticleInfo, ROLE } from "@/types/common";
-import { getArticleDetail, likes, deleteArticle } from "@apis/apis";
+import {
+  getArticleDetail,
+  likes,
+  deleteArticle,
+  getNoticeDetail,
+} from "@apis/apis";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { COLOR, relTime } from "@/utils";
@@ -76,15 +89,27 @@ const route = useRoute();
 const router = useRouter();
 const store = myStore();
 const userInfo = computed(() => store.state.userInfo);
+const isInfo = computed(() => route.fullPath.includes("info"));
 
 let data = ref<IArticleInfo>();
 
-getArticleDetail(route.query.id as string).then(([res]) => {
-  data.value = res;
-});
+const infoTags = ["公告信息", "考研资讯", "论坛交流"];
+
+if (isInfo.value) {
+  getNoticeDetail(route.query.id as string).then(([res]) => {
+    data.value = res;
+  });
+} else {
+  getArticleDetail(route.query.id as string).then(([res]) => {
+    data.value = res;
+  });
+}
 
 const handleDelete = () => {
-  deleteArticle({ objectId: route.query.id as string, type: 1 }).then(() => {
+  deleteArticle({
+    objectId: route.query.id as string,
+    type: isInfo ? 0 : 1,
+  }).then(() => {
     router.replace("/");
   });
 };
@@ -93,11 +118,17 @@ const handleEdit = () => {
   router.push(`/publish?id=${data.value?.articleId}`);
 };
 
+const updateComments = (id: string) => {
+  console.log("id: ", id);
+  data.value!.comment =
+    data.value?.comment?.filter((item) => item.id !== id) || [];
+};
+
 const handleLikes = () => {
   const param = {
     id: route.query.id as string,
     operation: data.value?.isLikes ? 0 : 1,
-    type: 1,
+    type: isInfo ? 0 : 1,
   };
   likes(param).then(() => {
     data.value!.isLikes = data.value?.isLikes ? 0 : 1;

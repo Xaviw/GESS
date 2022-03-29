@@ -1,6 +1,16 @@
 <template>
   <div class="max-area">
-    <h2 style="font-weight: bold; margin: 20px 0">论坛</h2>
+    <div class="flex-between">
+      <h2 style="font-weight: bold; margin: 20px 0 0 0">论坛</h2>
+      <a-button type="primary" @click="router.push('/publish/info')"
+        >发布信息</a-button
+      >
+    </div>
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane key="0" tab="公告信息"></a-tab-pane>
+      <a-tab-pane key="1" tab="考研咨询"></a-tab-pane>
+      <a-tab-pane key="2" tab="论坛交流"></a-tab-pane>
+    </a-tabs>
     <a-list
       item-layout="horizontal"
       size="large"
@@ -9,8 +19,16 @@
       style="padding: 0 0 20px 0"
     >
       <template #renderItem="{ item }">
-        <a-list-item key="item.title">
+        <a-list-item
+          :key="item.title"
+          class="item"
+          @click="router.push('/info/' + item.objectId)"
+        >
           <template #actions>
+            <span>
+              <CalendarOutlined style="margin-right: 8px" />
+              {{ relTime(item.createTime) }}
+            </span>
             <span>
               <EyeOutlined style="margin-right: 8px" />
               {{ item.views }}
@@ -35,22 +53,34 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { LikeOutlined, EyeOutlined, UserOutlined } from "@ant-design/icons-vue";
-import { reactive, ref } from "vue";
+import {
+  LikeOutlined,
+  EyeOutlined,
+  UserOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons-vue";
+import { reactive, ref, watchEffect } from "vue";
 import { getNotice } from "@apis/apis";
 import { INoticeData } from "@/types/common";
+import { relTime } from "@utils/index";
+import { useRouter } from "vue-router";
 
 let listData = ref<INoticeData[]>([]);
+const router = useRouter();
 
-getNotice({
-  type: 1,
-  page: 1,
-  pageSize: 99999,
-}).then(([res]) => {
-  if (pagination.total !== res.total) {
-    pagination.total = res.total;
-  }
-  listData.value = res.data;
+let activeKey = ref(0);
+
+watchEffect(() => {
+  getNotice({
+    type: activeKey.value,
+    page: 1,
+    pageSize: 99999,
+  }).then(([res]) => {
+    if (pagination.total !== res.total) {
+      pagination.total = res.total;
+    }
+    listData.value = res.data;
+  });
 });
 
 const pagination = reactive({
@@ -58,4 +88,23 @@ const pagination = reactive({
 });
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.item {
+  cursor: pointer;
+  &:hover {
+    background-color: #eee;
+  }
+}
+:deep(.ant-list-item) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:deep(.ant-list-item-meta) {
+  align-items: center;
+  margin-bottom: 10px;
+}
+:deep(.ant-list-item-action) {
+  margin-top: 10px;
+}
+</style>

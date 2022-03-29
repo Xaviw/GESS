@@ -7,6 +7,7 @@ import { navigateIfLogin, redirectToLogin } from "@utils/index";
 import { myStore } from "@/store";
 import { handleLogout } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
+import { ROLE } from "@/types/common";
 
 const appTitle = inject("appTitle");
 const store = myStore();
@@ -107,6 +108,21 @@ const gotoForum = () => {
                   <router-link to="/personal">个人中心</router-link>
                 </a-menu-item>
                 <a-menu-divider />
+                <a-menu-item>
+                  <router-link
+                    to="/edit-menu"
+                    v-if="userInfo.type == ROLE.administrator"
+                    >菜单编辑</router-link
+                  >
+                </a-menu-item>
+                <a-menu-item>
+                  <router-link
+                    to="/sensitive-manage"
+                    v-if="userInfo.type == ROLE.administrator"
+                    >敏感词编辑</router-link
+                  >
+                </a-menu-item>
+                <a-menu-divider v-if="userInfo.type == ROLE.administrator" />
                 <a-menu-item>
                   <a @click="handleLogout">退出登录</a>
                 </a-menu-item>

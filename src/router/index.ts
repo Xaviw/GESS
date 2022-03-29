@@ -1,6 +1,8 @@
 import { pendingRequests } from "./../request/index";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import "vue-router";
+import store from "@/store";
+import { ROLE } from "@/types/common";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -41,14 +43,53 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/publish",
     component: () => import("@views/publish/Index.vue"),
+    meta: {
+      needLogin: true,
+    },
+  },
+  {
+    path: "/publish/info",
+    component: () => import("@views/publish/Index.vue"),
+    meta: {
+      needLogin: true,
+    },
   },
   {
     path: "/article/:id",
     component: () => import("@views/article/Index.vue"),
+    meta: {
+      title: "文章",
+    },
+  },
+  {
+    path: "/info/:id",
+    component: () => import("@views/article/Index.vue"),
+    meta: {
+      title: "论坛信息",
+    },
   },
   {
     path: "/forum",
     component: () => import("@views/forum/Index.vue"),
+    meta: {
+      title: "论坛",
+    },
+  },
+  {
+    path: "/edit-menu",
+    component: () => import("@views/editMenu/Index.vue"),
+    meta: {
+      title: "菜单编辑",
+      needLogin: true,
+    },
+  },
+  {
+    path: "/sensitive-manage",
+    component: () => import("@views/sensitiveManage/Index.vue"),
+    meta: {
+      title: "敏感词管理",
+      needLogin: true,
+    },
   },
 ];
 
@@ -72,6 +113,14 @@ router.beforeEach((to, from) => {
     item[1].cancel && item[1].cancel();
   }
   pendingRequests.clear();
+
+  // if (
+  //   to.fullPath.includes("menu") ||
+  //   (to.fullPath.includes("sensitive") &&
+  //     store.state.role !== ROLE.administrator)
+  // ) {
+  //   return false;
+  // }
 });
 
 router.afterEach((to, from) => {

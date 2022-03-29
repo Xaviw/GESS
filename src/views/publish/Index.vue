@@ -1,7 +1,7 @@
 <template>
   <div class="max-area">
     <div class="flex-between">
-      <h2>发布文章</h2>
+      <h2>发布{{ isInfo ? "信息" : "文章" }}</h2>
       <a-button type="primary" @click="publish">发布</a-button>
     </div>
     <div class="flex-between" style="margin-bottom: 20px">
@@ -22,10 +22,21 @@
             mode="multiple"
             placeholder="请选择相关标签"
             :options="tagOptions"
+            v-if="!isInfo"
+          ></a-select>
+          <a-select
+            v-model:value="tags"
+            class="w300 inline-block"
+            placeholder="请选择相关标签"
+            :options="infoOptions"
+            v-else
           ></a-select>
         </p>
       </div>
-      <div style="display: flex; flex-direction: column; align-items: flex-end">
+      <div
+        style="display: flex; flex-direction: column; align-items: flex-end"
+        v-if="!isInfo"
+      >
         <a-upload
           v-model:file-list="fileList"
           :customRequest="uploadFile"
@@ -50,13 +61,17 @@ import Editor from "@/components/Editor.vue";
 import { computed, ref, watchEffect } from "vue";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { getArticleDetail, uploadArticle } from "@/request/apis";
+import { getArticleDetail, uploadArticle, addNotice } from "@/request/apis";
 import { myStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
 import { watch } from "vue";
+import { ROLE } from "@/types/common";
 
 const router = useRouter();
 const route = useRoute();
+
+let isInfo = computed(() => route.fullPath.includes("info"));
+
 let data = ref();
 watchEffect(() => {
   if (route.query.id) {
@@ -83,6 +98,14 @@ let tagOptions = computed<any[]>(() => {
   return data;
 });
 
+let infoOptions = [
+  { label: "考研资讯", value: 1 },
+  { label: "论坛交流", value: 2 },
+];
+if (store.state.userInfo?.type === ROLE.administrator) {
+  infoOptions.unshift({ label: "公告信息", value: 0 });
+}
+
 let fileList = ref<any[]>([]);
 let formData = new FormData();
 
@@ -102,7 +125,7 @@ const publish = () => {
     message.error("请填写标题！");
     return;
   }
-  if (!tags.value.length) {
+  if (isInfo.value ? tags.value == undefined : !tags.value.length) {
     message.error("请选择相关标签！");
     return;
   }
@@ -111,20 +134,31 @@ const publish = () => {
     message.error("请输入正文！");
     return;
   }
-  formData.append("title", title.value);
-  formData.append("tags", JSON.stringify(tags.value));
-  formData.append("content", JSON.stringify(content));
-  if (route.query.id) {
-    formData.append("id", route.query.id as string);
-  }
-  uploadArticle(formData).then(
-    ([res]) => {
-      router.push("/article/" + res);
-    },
-    () => {
-      formData = new FormData();
+  if (isInfo.value) {
+    const param = {
+      title: title.value,
+      content: JSON.stringify(content),
+      type: tags.value as unknown as number,
+    };
+    addNotice(param).then(([res]) => {
+      router.push("/info/" + res);
+    });
+  } else {
+    formData.append("title", title.value);
+    formData.append("tags", JSON.stringify(tags.value));
+    formData.append("content", JSON.stringify(content));
+    if (route.query.id) {
+      formData.append("id", route.query.id as string);
     }
-  );
+    uploadArticle(formData).then(
+      ([res]) => {
+        router.push("/article/" + res);
+      },
+      () => {
+        formData = new FormData();
+      }
+    );
+  }
 };
 </script>
 

@@ -68,6 +68,7 @@ export interface IArticle {
 
 export interface IArticleInfo {
   id: string;
+  type?: number;
   articleId: string;
   userName: string;
   userId: string;
