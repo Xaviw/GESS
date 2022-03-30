@@ -1,34 +1,24 @@
 <template>
-  <div class="max-area container">
+  <div class="max-area" style="padding: 20px">
     <CascadeMenu />
     <div class="article-area">
       <ArticleCard v-for="item in list" :key="item.id" :data="item" />
       <div class="anchor"></div>
       <div class="anchor"></div>
       <div class="anchor"></div>
-      <div class="anchor" ref="target"></div>
+      <div class="anchor" id="bottomAnchor"></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useIntersectionObserver } from "@vueuse/core";
 import CascadeMenu from "@/components/CascadeMenu.vue";
 import { getArticle } from "@/request/apis";
-import { myStore } from "@/store";
 import { IArticleInfo } from "@/types/common";
-import { onUnmounted, ref, watch, watchEffect } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
-const store = myStore();
 const route = useRoute();
-
-const target = ref<HTMLElement | null>(null);
-const targetIsVisible = ref(false);
-
-const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
-  targetIsVisible.value = isIntersecting;
-});
 
 const queryParam = {
   page: 1,
@@ -45,33 +35,30 @@ const handleSearch = () => {
     }
   });
 };
-handleSearch();
-watch(
-  () => route.query.type,
-  () => {
-    queryParam.page = 1;
-    queryParam.type = route.query.type as string;
-    list.value = [];
-    total = 0;
-    handleSearch();
-  }
-);
-watch(targetIsVisible, () => {
-  if (targetIsVisible.value && list.value.length < total) {
-    queryParam.page++;
-    handleSearch();
-  }
+let observer: any;
+onMounted(() => {
+  let observer = new IntersectionObserver(
+    (entries) => {
+      const ratio = entries[0].intersectionRatio;
+      if (ratio > 0 && total === 0) {
+        handleSearch();
+      } else if (ratio > 0 && list.value.length < total) {
+        queryParam.page++;
+        handleSearch();
+      }
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(document.getElementById("bottomAnchor")!);
 });
 
 onUnmounted(() => {
-  stop();
+  observer.disconnect();
 });
 </script>
 
 <style lang="less" scoped>
-.container {
-  margin: 20px;
-}
 .article-area {
   display: flex;
   justify-content: space-between;

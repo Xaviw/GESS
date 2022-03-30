@@ -1,11 +1,19 @@
 <template>
   <h3>附件：</h3>
   <a-typography-text type="secondary" v-if="!file">无附件...</a-typography-text>
-  <a-button :href="file" v-else>下载附件</a-button>
+  <template v-else>
+    <a-button :href="file" type="primary">下载附件</a-button>
+    <a-button
+      :href="`/article/viewsFileById?id=${id}`"
+      target="blank"
+      style="margin-left: 15px"
+      >预览</a-button
+    >
+  </template>
 </template>
 
 <script lang="ts" setup>
-defineProps<{ file: string }>();
+defineProps<{ file: string; id: string }>();
 </script>
 
 <style lang="less" scoped>

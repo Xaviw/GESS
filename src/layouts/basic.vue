@@ -9,7 +9,7 @@
             class="flex-center"
             style="border-bottom: none"
             v-model:selectedKeys="selectedKeys"
-            v-if="menu.length"
+            v-if="menu?.length"
           >
             <template v-for="item in menu" :key="item.id">
               <template v-if="!item.children">
@@ -102,7 +102,7 @@ const store = myStore();
 const router = useRouter();
 const route = useRoute();
 
-if (!store.state.tags.length) {
+if (!store.state.tags?.length) {
   getTags().then(([res]) => {
     if (route.path == "/category") {
       let param: any = { data: res };

@@ -12,24 +12,26 @@ const props = defineProps<{ canEdit: boolean; data?: string }>();
 let editor: any;
 
 onMounted(() => {
-  const E = WangEditor;
-  editor = new E("#toolbar-container", "#text-container");
-  editor.config.uploadImgServer = "/article/uploadArticleImage";
-  editor.config.zIndex = 1040;
-  editor.create();
-  watchEffect(() => {
-    if (props.data) {
-      editor.txt.setJSON(JSON.parse(props.data));
-    }
-  });
+  if (!editor) {
+    const E = WangEditor;
+    editor = new E("#toolbar-container", "#text-container");
+    editor.config.uploadImgServer = "/article/uploadArticleImage";
+    editor.config.zIndex = 1040;
+    editor.create();
+    watchEffect(() => {
+      if (props.data) {
+        editor.txt.setJSON(JSON.parse(props.data));
+      }
+    });
 
-  watchEffect(() => {
-    if (props.canEdit) {
-      editor.enable();
-    } else {
-      editor.disable();
-    }
-  });
+    watchEffect(() => {
+      if (props.canEdit) {
+        editor.enable();
+      } else {
+        editor.disable();
+      }
+    });
+  }
 });
 
 const getJSON = () => editor.txt.getJSON();

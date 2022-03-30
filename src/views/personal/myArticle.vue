@@ -14,7 +14,7 @@
         }}
       </template>
       <template v-else-if="column.key === 'downLoad'">
-        <a-button type="primary">下载</a-button>
+        <a-button type="primary" :href="record.url">下载</a-button>
       </template>
     </template>
   </a-table>

@@ -81,7 +81,7 @@ let currentTag = ref(0);
 let currentSub = ref(0);
 
 watchEffect(() => {
-  if (!tags.value.length && store.state.tags.length) {
+  if (!tags.value.length && store.state.tags?.length) {
     tags.value = deepClone(store.state.tags);
   }
 });

@@ -1,5 +1,5 @@
 <template>
-  <a-form :model="formState" layout="vertical" class="container">
+  <a-form :model="formState" layout="vertical" class="pwd-container">
     <a-form-item label="原密码">
       <a-input-password v-model:value="formState.oldPwd"> </a-input-password>
     </a-form-item>
@@ -51,7 +51,7 @@ const onSubmit = () => {
 </script>
 
 <style scoped lang="less">
-.container {
+.pwd-container {
   max-width: 400px;
   margin: 0 auto;
 }

@@ -116,9 +116,8 @@ router.beforeEach((to, from) => {
   pendingRequests.clear();
 
   if (
-    to.fullPath.includes("menu") ||
-    (to.fullPath.includes("sensitive") &&
-      store.state.role !== ROLE.administrator)
+    (to.fullPath.includes("menu") || to.fullPath.includes("sensitive")) &&
+    store.state.role !== ROLE.administrator
   ) {
     return false;
   }

@@ -31,14 +31,13 @@
       <div class="anchor"></div>
       <div class="anchor"></div>
       <div class="anchor"></div>
-      <div class="anchor" ref="target"></div>
+      <div class="anchor" id="bottomAnchor"></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useIntersectionObserver } from "@vueuse/core";
-import { onUnmounted, ref, watch, watchEffect } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import ArticleCard from "@/components/ArticleCard.vue";
 import { getArticle } from "@/request/apis";
 import { IArticleInfo } from "@/types/common";
@@ -47,12 +46,6 @@ import { SearchOutlined } from "@ant-design/icons-vue";
 
 let keyWord = ref("");
 let currentKey = "";
-const target = ref<HTMLElement | null>(null);
-const targetIsVisible = ref(false);
-
-const { stop } = useIntersectionObserver(target, ([{ isIntersecting }]) => {
-  targetIsVisible.value = isIntersecting;
-});
 
 const router = useRouter();
 const gotoDetail = (id: string) => {
@@ -81,16 +74,27 @@ const handleSearch = () => {
     }
   });
 };
-handleSearch();
-watch(targetIsVisible, () => {
-  if (targetIsVisible.value && list.value.length < total) {
-    queryParam.page++;
-    handleSearch();
-  }
+
+let observer: any;
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      const ratio = entries[0].intersectionRatio;
+      if (ratio > 0 && total === 0) {
+        handleSearch();
+      } else if (ratio > 0 && list.value.length < total) {
+        queryParam.page++;
+        handleSearch();
+      }
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(document.getElementById("bottomAnchor")!);
 });
 
 onUnmounted(() => {
-  stop();
+  observer.disconnect();
 });
 </script>
 
@@ -115,7 +119,7 @@ onUnmounted(() => {
   letter-spacing: 2px;
 }
 :deep(.ant-input) {
-  width: 650px;
+  width: 650px !important;
   height: 49px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.2);

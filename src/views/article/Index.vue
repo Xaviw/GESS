@@ -60,7 +60,7 @@
       </div>
     </div>
     <Editor :canEdit="false" :data="data?.content" />
-    <Enclosure :file="data?.url" v-if="!isInfo" />
+    <Enclosure :file="data?.url" :id="data?.articleId" target="blank" />
     <CommentList
       :comments="data?.comment || []"
       :type="isInfo ? 0 : 1"
@@ -96,19 +96,19 @@ let data = ref<IArticleInfo>();
 const infoTags = ["公告信息", "考研资讯", "论坛交流"];
 
 if (isInfo.value) {
-  getNoticeDetail(route.query.id as string).then(([res]) => {
+  getNoticeDetail(route.params.id as string).then(([res]) => {
     data.value = res;
   });
 } else {
-  getArticleDetail(route.query.id as string).then(([res]) => {
+  getArticleDetail(route.params.id as string).then(([res]) => {
     data.value = res;
   });
 }
 
 const handleDelete = () => {
   deleteArticle({
-    objectId: route.query.id as string,
-    type: isInfo ? 0 : 1,
+    objectId: route.params.id as string,
+    type: isInfo.value ? 0 : 1,
   }).then(() => {
     router.replace("/");
   });
@@ -125,9 +125,9 @@ const updateComments = (id: string) => {
 
 const handleLikes = () => {
   const param = {
-    id: route.query.id as string,
+    id: route.params.id as string,
     operation: data.value?.isLikes ? 0 : 1,
-    type: isInfo ? 0 : 1,
+    type: isInfo.value ? 0 : 1,
   };
   likes(param).then(() => {
     data.value!.isLikes = data.value?.isLikes ? 0 : 1;

@@ -74,6 +74,9 @@ const handleChange = (info: any) => {
   }
   if (info.file.status === "done" && info.file.response.data.face) {
     imageUrl.value = info.file.response.data.face;
+    store.commit("modify", {
+      userInfo: { ...store.state.userInfo, face: info.file.response.data.face },
+    });
     loading.value = false;
   }
   if (info.file.status === "error") {
