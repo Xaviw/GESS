@@ -66,7 +66,6 @@ const store = myStore();
 
 const loading = ref<boolean>(false);
 const imageUrl = ref<string>(store.state.userInfo?.face ?? "");
-console.log("imageUrl: ", imageUrl);
 
 const handleChange = (info: any) => {
   if (info.file.status === "uploading") {
@@ -107,7 +106,6 @@ const formState: UnwrapRef<IModifyInfo> = reactive({
 const onSubmit = () => {
   let data: any = toRaw(formState);
   data.birthday = dayjs(data.birthday).format("YYYY-MM-DD");
-  console.log("data: ", data);
   modifyProfile(data);
 };
 </script>

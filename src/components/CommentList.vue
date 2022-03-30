@@ -126,7 +126,6 @@ const handleReply = () => {
 };
 
 const handleDeleteComment = (id: string) => {
-  console.log("id: ", id);
   deleteComment({ type: props.type, id }).then(() => {
     emit("updateComments", id);
   });

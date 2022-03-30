@@ -69,11 +69,19 @@ const getNoticeDetail = (id: string) =>
 const deleteComment = (data: { type: number; id: string }) =>
   http("post", "/comment/deleteComment", data);
 
-const getSensitiveWords = () =>
-  http<{ id: string; word: string }[]>("get", "/tags/updateSensitives");
+const getSensitiveWords = () => http<string>("get", "/tags/getSensitives");
+
+const editSensitiveWords = (word: string) =>
+  http("post", "/tags/updateSensitives", { word });
 
 const deleteTag = (data: { id: string; isParent: number }) =>
-  http("post", "/tags/delTags");
+  http("post", "/tags/delTags", data);
+
+const addTag = (data: { name: string; parentId?: string }) =>
+  http<string>("post", "/tags/addTags", data);
+
+const editTag = (data: { name: string; tagId: string }) =>
+  http("post", "/tags/updateTags", data);
 
 export {
   getTags,
@@ -94,5 +102,8 @@ export {
   getNoticeDetail,
   deleteComment,
   getSensitiveWords,
+  editSensitiveWords,
   deleteTag,
+  addTag,
+  editTag,
 };

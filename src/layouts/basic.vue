@@ -1,59 +1,3 @@
-<script setup lang="ts">
-import { computed, inject, provide, ref, watch, watchEffect } from "vue";
-import { UserOutlined, SearchOutlined } from "@ant-design/icons-vue";
-import { getTags } from "@/request/apis";
-import type { IFirTag } from "@/types/common";
-import { navigateIfLogin, redirectToLogin } from "@utils/index";
-import { myStore } from "@/store";
-import { handleLogout } from "@/utils";
-import { useRoute, useRouter } from "vue-router";
-import { ROLE } from "@/types/common";
-
-const appTitle = inject("appTitle");
-const store = myStore();
-const router = useRouter();
-const route = useRoute();
-
-if (!store.state.tags.length) {
-  getTags().then(([res]) => {
-    if (route.path == "/category") {
-      let param: any = { data: res };
-      if (route.query.type) {
-        param.target = route.query.type;
-      }
-      store.commit("initTags", param);
-    } else {
-      store.commit("modify", { tags: res });
-    }
-  });
-}
-
-let menu = computed(() => store.state.tags);
-
-watch(menu, (v, v2) => {
-  console.log(v, v2);
-});
-
-let userInfo = computed(() => store.state.userInfo);
-
-let selectedKeys = computed({
-  get() {
-    return store.state.currentMenu;
-  },
-  set(value) {
-    store.commit("modify", { currentMenu: value });
-  },
-});
-
-const publish = () => {
-  navigateIfLogin("/publish");
-};
-
-const gotoForum = () => {
-  router.push("/forum");
-};
-</script>
-
 <template>
   <div class="body">
     <div class="header">
@@ -65,9 +9,10 @@ const gotoForum = () => {
             class="flex-center"
             style="border-bottom: none"
             v-model:selectedKeys="selectedKeys"
+            v-if="menu.length"
           >
             <template v-for="item in menu" :key="item.id">
-              <template v-if="!item.children?.length">
+              <template v-if="!item.children">
                 <a-menu-item :key="item.id">
                   {{ item.name }}
                 </a-menu-item>
@@ -141,6 +86,57 @@ const gotoForum = () => {
     <div class="footer flex-center">- 考研分享平台 -</div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { computed, inject } from "vue";
+import { UserOutlined } from "@ant-design/icons-vue";
+import { getTags } from "@/request/apis";
+import { navigateIfLogin, redirectToLogin } from "@utils/index";
+import { myStore } from "@/store";
+import { handleLogout } from "@/utils";
+import { useRoute, useRouter } from "vue-router";
+import { ROLE } from "@/types/common";
+
+const appTitle = inject("appTitle");
+const store = myStore();
+const router = useRouter();
+const route = useRoute();
+
+if (!store.state.tags.length) {
+  getTags().then(([res]) => {
+    if (route.path == "/category") {
+      let param: any = { data: res };
+      if (route.query.type) {
+        param.target = route.query.type;
+      }
+      store.commit("initTags", param);
+    } else {
+      store.commit("modify", { tags: res });
+    }
+  });
+}
+
+let menu = computed(() => store.state.tags);
+
+let userInfo = computed(() => store.state.userInfo);
+
+let selectedKeys = computed({
+  get() {
+    return store.state.currentMenu;
+  },
+  set(value) {
+    store.commit("modify", { currentMenu: value });
+  },
+});
+
+const publish = () => {
+  navigateIfLogin("/publish");
+};
+
+const gotoForum = () => {
+  router.push("/forum");
+};
+</script>
 
 <style lang="less" scoped>
 :deep(.ant-menu-horizontal) {

@@ -1,3 +1,41 @@
+<template>
+  <div class="container flex-center">
+    <p class="main-title">搜索本站精品学习资料</p>
+    <p class="sub-title">找资料真轻松</p>
+    <div>
+      <a-input-search
+        v-model:value="keyWord"
+        placeholder="输入关键字搜索"
+        size="large"
+        @search="handleSearch"
+      >
+        <template #enterButton>
+          <a-button type="primary">
+            <template #icon><SearchOutlined /></template>
+            搜索
+          </a-button>
+        </template>
+      </a-input-search>
+    </div>
+  </div>
+  <div class="max-area decorate">
+    <p>你的前景，远超我们想象</p>
+    <em class="divider"></em>
+    <div class="article-area">
+      <ArticleCard
+        v-for="item in list"
+        :key="item.id"
+        :data="item"
+        @click="gotoDetail(item.id)"
+      />
+      <div class="anchor"></div>
+      <div class="anchor"></div>
+      <div class="anchor"></div>
+      <div class="anchor" ref="target"></div>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { useIntersectionObserver } from "@vueuse/core";
 import { onUnmounted, ref, watch, watchEffect } from "vue";
@@ -5,6 +43,7 @@ import ArticleCard from "@/components/ArticleCard.vue";
 import { getArticle } from "@/request/apis";
 import { IArticleInfo } from "@/types/common";
 import { useRouter } from "vue-router";
+import { SearchOutlined } from "@ant-design/icons-vue";
 
 let keyWord = ref("");
 let currentKey = "";
@@ -54,44 +93,6 @@ onUnmounted(() => {
   stop();
 });
 </script>
-
-<template>
-  <div class="container flex-center">
-    <p class="main-title">搜索本站精品学习资料</p>
-    <p class="sub-title">找资料真轻松</p>
-    <div>
-      <a-input-search
-        v-model:value="keyWord"
-        placeholder="输入关键字搜索"
-        size="large"
-        @search="handleSearch"
-      >
-        <template #enterButton>
-          <a-button type="primary">
-            <template #icon><SearchOutlined /></template>
-            搜索
-          </a-button>
-        </template>
-      </a-input-search>
-    </div>
-  </div>
-  <div class="max-area decorate">
-    <p>你的前景，远超我们想象</p>
-    <em class="divider"></em>
-    <div class="article-area">
-      <ArticleCard
-        v-for="item in list"
-        :key="item.id"
-        :data="item"
-        @click="gotoDetail(item.id)"
-      />
-      <div class="anchor"></div>
-      <div class="anchor"></div>
-      <div class="anchor"></div>
-      <div class="anchor" ref="target"></div>
-    </div>
-  </div>
-</template>
 
 <style scoped lang="less">
 .container {

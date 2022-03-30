@@ -13,8 +13,12 @@
               currentSub = 0;
             "
           >
-            <a-input :value="item.name" placeholder="请输入" />
-            <a-button type="primary" class="mr-10" style="margin-left: 20px"
+            <a-input v-model:value="item.name" placeholder="请输入" />
+            <a-button
+              type="primary"
+              class="mr-10"
+              style="margin-left: 20px"
+              @click="handleUpdate(item.name, item.id)"
               >修改</a-button
             >
             <a-button
@@ -25,7 +29,9 @@
             >
           </div>
         </div>
-        <a-button style="width: 100%; margin-top: 20px">新增</a-button>
+        <a-button style="width: 100%; margin-top: 20px" @click="handleAdd(true)"
+          >新增</a-button
+        >
       </div>
       <div class="box">
         <div class="container">
@@ -35,8 +41,12 @@
             :class="{ active: currentSub == index }"
             @click="currentSub = index"
           >
-            <a-input :value="item.name" placeholder="请输入" />
-            <a-button type="primary" class="mr-10" style="margin-left: 20px"
+            <a-input v-model:value="item.name" placeholder="请输入" />
+            <a-button
+              type="primary"
+              class="mr-10"
+              style="margin-left: 20px"
+              @click="handleUpdate(item.name, item.id)"
               >修改</a-button
             >
             <a-button
@@ -47,7 +57,11 @@
             >
           </div>
         </div>
-        <a-button style="width: 100%; margin-top: 20px">新增</a-button>
+        <a-button
+          style="width: 100%; margin-top: 20px"
+          @click="handleAdd(false)"
+          >新增</a-button
+        >
       </div>
     </div>
   </div>
@@ -55,28 +69,63 @@
 
 <script setup lang="ts">
 import { myStore } from "@/store";
-import { computed, ref } from "vue";
-import { deleteTag } from "@apis/apis";
+import { computed, onBeforeUnmount, ref, watchEffect } from "vue";
+import { addTag, deleteTag, editTag, getTags } from "@apis/apis";
 import deepClone from "@utils/deepClone";
 import { IFirTag } from "@/types/common";
+import { useRoute } from "vue-router";
 
 const store = myStore();
-let tags = computed<IFirTag[]>(() => store.state.tags);
+let tags = ref<IFirTag[]>([]);
 let currentTag = ref(0);
 let currentSub = ref(0);
 
+watchEffect(() => {
+  if (!tags.value.length && store.state.tags.length) {
+    tags.value = deepClone(store.state.tags);
+  }
+});
+
 let handleDelete = (id: string, index: number, isParent: number) => {
   deleteTag({ id, isParent }).then(() => {
-    let cloneTags = deepClone(store.state.tags);
     if (isParent) {
-      cloneTags.splice(index, 1);
+      tags.value.splice(index, 1);
+      currentTag.value = currentSub.value = 0;
     } else {
-      cloneTags[currentTag.value].children.splice(index, 1);
+      tags.value[currentTag.value].children.splice(index, 1);
+      currentSub.value = 0;
     }
-    store.commit("modify", { tags: cloneTags });
-    currentTag.value = currentSub.value = 0;
   });
 };
+
+let handleUpdate = (name: string, tagId: string) => {
+  editTag({ name, tagId });
+};
+
+let handleAdd = (flag: boolean) => {
+  let param: any = { name: "新增" };
+  if (!flag) {
+    param.parentId = tags.value[currentTag.value].id;
+  }
+  addTag(param).then(([res]) => {
+    if (flag) {
+      tags.value.push({ id: res, name: "新增", children: [] });
+    } else {
+      tags.value[currentTag.value].children.push({ id: res, name: "新增" });
+    }
+  });
+};
+
+const route = useRoute();
+
+onBeforeUnmount(() => {
+  getTags().then(([res]) => {
+    store.commit("modify", { tags: [] });
+    setTimeout(() => {
+      store.commit("modify", { tags: res });
+    });
+  });
+});
 </script>
 
 <style scoped lang="less">

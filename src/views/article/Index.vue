@@ -119,7 +119,6 @@ const handleEdit = () => {
 };
 
 const updateComments = (id: string) => {
-  console.log("id: ", id);
   data.value!.comment =
     data.value?.comment?.filter((item) => item.id !== id) || [];
 };

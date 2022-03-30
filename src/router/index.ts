@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import "vue-router";
 import store from "@/store";
 import { ROLE } from "@/types/common";
+import { message } from "ant-design-vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -114,13 +115,18 @@ router.beforeEach((to, from) => {
   }
   pendingRequests.clear();
 
-  // if (
-  //   to.fullPath.includes("menu") ||
-  //   (to.fullPath.includes("sensitive") &&
-  //     store.state.role !== ROLE.administrator)
-  // ) {
-  //   return false;
-  // }
+  if (
+    to.fullPath.includes("menu") ||
+    (to.fullPath.includes("sensitive") &&
+      store.state.role !== ROLE.administrator)
+  ) {
+    return false;
+  }
+
+  if (to.meta.needLogin && !store.state.alreadyLogin) {
+    message.warn("请先登录！");
+    router.push(`/login?redirect=${to.fullPath}`);
+  }
 });
 
 router.afterEach((to, from) => {
