@@ -4,39 +4,50 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watchEffect } from "vue";
+import { onMounted, onUnmounted, watchEffect, WatchStopHandle } from "vue";
 import WangEditor from "wangeditor";
 
 const props = defineProps<{ canEdit: boolean; data?: string }>();
 
 let editor: any;
+let t1: WatchStopHandle, t2: WatchStopHandle;
 
 onMounted(() => {
-  if (!editor) {
-    const E = WangEditor;
-    editor = new E("#toolbar-container", "#text-container");
-    editor.config.uploadImgServer = "/article/uploadArticleImage";
-    editor.config.zIndex = 1000;
-    editor.create();
-    watchEffect(() => {
-      if (props.data) {
-        editor.txt.setJSON(JSON.parse(props.data));
-      }
-    });
+  createEditor();
+  t1 = watchEffect(() => {
+    if (props.data) {
+      editor?.txt.setJSON(JSON.parse(props.data));
+    }
+  });
 
-    watchEffect(() => {
-      if (props.canEdit) {
-        editor.enable();
-      } else {
-        editor.disable();
-      }
-    });
-  }
+  t2 = watchEffect(() => {
+    if (props.canEdit) {
+      editor?.enable();
+    } else {
+      editor?.disable();
+    }
+  });
 });
 
-const getJSON = () => editor.txt.getJSON();
+const getJSON = () => editor?.txt.getJSON();
 
 defineExpose({ getJSON });
+
+const createEditor = () => {
+  console.log(editor);
+  editor?.destroy();
+  const E = WangEditor;
+  editor = new E("#toolbar-container", "#text-container");
+  editor.config.uploadImgServer = "/article/uploadArticleImage";
+  editor.config.zIndex = 1000;
+  editor.create();
+};
+
+onUnmounted(() => {
+  editor?.destroy();
+  t1();
+  t2();
+});
 </script>
 
 <style scoped lang="less">

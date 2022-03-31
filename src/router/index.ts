@@ -115,17 +115,19 @@ router.beforeEach((to, from) => {
   }
   pendingRequests.clear();
 
-  if (
-    (to.fullPath.includes("menu") || to.fullPath.includes("sensitive")) &&
-    store.state.role !== ROLE.administrator
+  if (to.fullPath.includes("menu") && store.state.role == ROLE.user) {
+    return false;
+  } else if (
+    to.fullPath.includes("sensitive") &&
+    store.state.role !== ROLE.super
   ) {
     return false;
   }
 
-  // if (to.meta.needLogin && !store.state.alreadyLogin) {
-  //   message.warn("请先登录！");
-  //   router.push(`/login?redirect=${to.fullPath}`);
-  // }
+  if (to.meta.needLogin && !store.state.alreadyLogin) {
+    message.warn("请先登录！");
+    router.push(`/login?redirect=${to.fullPath}`);
+  }
 });
 
 router.afterEach((to, from) => {

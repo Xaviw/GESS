@@ -61,7 +61,12 @@ import Editor from "@/components/Editor.vue";
 import { computed, ref, watchEffect } from "vue";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { getArticleDetail, uploadArticle, addNotice } from "@/request/apis";
+import {
+  getArticleDetail,
+  uploadArticle,
+  addNotice,
+  getNoticeDetail,
+} from "@/request/apis";
 import { myStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
 import { watch } from "vue";
@@ -75,11 +80,19 @@ let isInfo = computed(() => route.fullPath.includes("info"));
 let data = ref();
 watchEffect(() => {
   if (route.query.id) {
-    getArticleDetail(route.query.id as string).then(([res]) => {
-      data.value = res.content;
-      title.value = res.title;
-      tags.value = res.tags.map((item) => item.id);
-    });
+    if (route.query.type) {
+      getArticleDetail(route.query.id as string).then(([res]) => {
+        data.value = res.content;
+        title.value = res.title;
+        tags.value = res.tags.map((item) => item.id);
+      });
+    } else {
+      getNoticeDetail(route.query.id as string).then(([res]) => {
+        data.value = res.content;
+        title.value = res.title;
+        tags.value = res.type as number;
+      });
+    }
   }
 });
 
@@ -87,7 +100,7 @@ const editorEl = ref<any>(null);
 let title = ref("");
 
 const store = myStore();
-let tags = ref<any[]>([]);
+let tags = ref<any[] | number>([]);
 let tagOptions = computed<any[]>(() => {
   let data: any[] = [];
   store.state.tags.map((item) => data.push(...item.children));
@@ -102,7 +115,7 @@ let infoOptions = [
   { label: "考研资讯", value: 1 },
   { label: "论坛交流", value: 2 },
 ];
-if (store.state.userInfo?.type === ROLE.administrator) {
+if (store.state.role === ROLE.administrator || store.state.role == ROLE.super) {
   infoOptions.unshift({ label: "公告信息", value: 0 });
 }
 
@@ -125,7 +138,11 @@ const publish = () => {
     message.error("请填写标题！");
     return;
   }
-  if (isInfo.value ? tags.value == undefined : !tags.value.length) {
+  if (
+    isInfo.value
+      ? tags.value == undefined
+      : !tags.value || !(tags.value as any[]).length
+  ) {
     message.error("请选择相关标签！");
     return;
   }
@@ -145,7 +162,7 @@ const publish = () => {
     });
   } else {
     formData.append("title", title.value);
-    formData.append("tags", tags.value.join(","));
+    formData.append("tags", (tags.value as any[]).join(","));
     formData.append("content", JSON.stringify(content));
     if (route.query.id) {
       formData.append("id", route.query.id as string);

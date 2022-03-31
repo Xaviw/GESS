@@ -40,6 +40,7 @@ export enum SEX {
 export enum ROLE {
   user,
   administrator,
+  super,
 }
 
 export function isValidKey(

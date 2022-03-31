@@ -3,14 +3,20 @@
     <div class="flex-between">
       <h2>{{ data?.title }}</h2>
       <div>
-        <a-button type="primary" class="mr-10" @click="handleEdit"
+        <a-button
+          type="primary"
+          class="mr-10"
+          @click="handleEdit"
+          v-if="data?.userId == userInfo?.id"
           >编辑</a-button
         >
         <a-button
           type="primary"
           danger
           v-if="
-            data?.userId == userInfo?.id || userInfo?.type == ROLE.administrator
+            data?.userId == userInfo?.id ||
+            userInfo?.type == ROLE.administrator ||
+            store.state.role == ROLE.super
           "
           @click="handleDelete"
           >删除</a-button
@@ -116,7 +122,9 @@ const handleDelete = () => {
 };
 
 const handleEdit = () => {
-  router.push(`/publish?id=${data.value?.articleId}`);
+  router.push(
+    `/publish?id=${data.value?.articleId}&type=${isInfo.value ? 0 : 1}`
+  );
 };
 
 const deleteComments = (id: string) => {

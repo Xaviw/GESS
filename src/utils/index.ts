@@ -84,20 +84,18 @@ const relTime = (strDate: string) => {
   return dayjs().locale("zh-cn").from(strDate);
 };
 
-// FIXME:未登录跳转登录
 const navigateIfLogin = (target: string, resetMenu: boolean = true) => {
-  const route = Vrouter.currentRoute.value;
   const router = Vrouter;
-  // if (store.state.alreadyLogin) {
-  router.push(target);
-  if (resetMenu) {
-    store.commit("modify", {
-      currentMenu: [],
-    });
+  if (store.state.alreadyLogin) {
+    router.push(target);
+    if (resetMenu) {
+      store.commit("modify", {
+        currentMenu: [],
+      });
+    }
+  } else {
+    router.push("/login");
   }
-  // } else {
-  //   router.push("/login");
-  // }
 };
 
 const COLOR = ["pink", "red", "orange", "green", "cyan", "blue", "purple"];

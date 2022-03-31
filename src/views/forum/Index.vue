@@ -22,7 +22,7 @@
         <a-list-item
           :key="item.title"
           class="item"
-          @click="router.push('/info/' + item.objectId)"
+          @click="router.push('/info/' + item.articleId)"
         >
           <template #actions>
             <span>
@@ -38,7 +38,7 @@
               {{ item.likes }}
             </span>
           </template>
-          <a-list-item-meta :title="item.title">
+          <a-list-item-meta :title="item.userName">
             <template #avatar
               ><a-avatar :src="item.face">
                 <template #icon>
@@ -46,7 +46,7 @@
                 </template> </a-avatar
             ></template>
           </a-list-item-meta>
-          {{ item.content }}
+          {{ item.title }}
         </a-list-item>
       </template>
     </a-list>

@@ -12,7 +12,7 @@
       <a-button
         style="margin-left: 10px"
         v-show="'' == replyId"
-        @click="handleReply"
+        @click="handleReply('')"
         >发表</a-button
       >
     </div>
@@ -43,7 +43,8 @@
         @click="handleDeleteComment(item.id)"
         v-if="
           item.userId == store.state.userInfo?.id ||
-          store.state.role == ROLE.administrator
+          store.state.role == ROLE.administrator ||
+          store.state.role == ROLE.super
         "
         >删除</a-button
       >
@@ -117,7 +118,8 @@ const reply = (id: string) => {
   }
 };
 
-const handleReply = (id: string = "") => {
+const handleReply = (id: string) => {
+  console.log("id: ", id);
   comment({
     objectId: route.params.id as string,
     parentId: id,
