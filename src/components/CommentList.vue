@@ -33,7 +33,7 @@
           size="small"
           style="margin-left: 10px"
           v-show="item.id == replyId"
-          @click="handleReply"
+          @click="handleReply(item.id)"
           >回复</a-button
         >
       </span>
@@ -96,7 +96,10 @@ const props = defineProps<{
   type: number;
 }>();
 
-const emit = defineEmits<{ (e: "updateComments", id: string): void }>();
+const emit = defineEmits<{
+  (e: "deleteComments", id: string): void;
+  (e: "refresh"): void;
+}>();
 
 const router = useRouter();
 const route = useRoute();
@@ -114,20 +117,21 @@ const reply = (id: string) => {
   }
 };
 
-const handleReply = () => {
+const handleReply = (id: string = "") => {
   comment({
     objectId: route.params.id as string,
-    parentId: replyContent.value,
+    parentId: id,
     comment: replyContent.value,
     type: props.type,
   }).then(() => {
     replyContent.value = "";
+    emit("refresh");
   });
 };
 
 const handleDeleteComment = (id: string) => {
   deleteComment({ type: props.type, id }).then(() => {
-    emit("updateComments", id);
+    emit("deleteComments", id);
   });
 };
 </script>

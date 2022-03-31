@@ -122,10 +122,10 @@ router.beforeEach((to, from) => {
     return false;
   }
 
-  if (to.meta.needLogin && !store.state.alreadyLogin) {
-    message.warn("请先登录！");
-    router.push(`/login?redirect=${to.fullPath}`);
-  }
+  // if (to.meta.needLogin && !store.state.alreadyLogin) {
+  //   message.warn("请先登录！");
+  //   router.push(`/login?redirect=${to.fullPath}`);
+  // }
 });
 
 router.afterEach((to, from) => {

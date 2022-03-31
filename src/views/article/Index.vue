@@ -3,11 +3,7 @@
     <div class="flex-between">
       <h2>{{ data?.title }}</h2>
       <div>
-        <a-button
-          type="primary"
-          class="mr-10"
-          v-if="data?.userId == userInfo?.id"
-          @click="handleEdit"
+        <a-button type="primary" class="mr-10" @click="handleEdit"
           >编辑</a-button
         >
         <a-button
@@ -64,7 +60,8 @@
     <CommentList
       :comments="data?.comment || []"
       :type="isInfo ? 0 : 1"
-      @updateComments="updateComments"
+      @deleteComments="deleteComments"
+      @refresh="getValue"
     />
   </div>
 </template>
@@ -95,15 +92,19 @@ let data = ref<IArticleInfo>();
 
 const infoTags = ["公告信息", "考研资讯", "论坛交流"];
 
-if (isInfo.value) {
-  getNoticeDetail(route.params.id as string).then(([res]) => {
-    data.value = res;
-  });
-} else {
-  getArticleDetail(route.params.id as string).then(([res]) => {
-    data.value = res;
-  });
-}
+const getValue = () => {
+  if (isInfo.value) {
+    getNoticeDetail(route.params.id as string).then(([res]) => {
+      data.value = res;
+    });
+  } else {
+    getArticleDetail(route.params.id as string).then(([res]) => {
+      data.value = res;
+    });
+  }
+};
+
+getValue();
 
 const handleDelete = () => {
   deleteArticle({
@@ -118,7 +119,7 @@ const handleEdit = () => {
   router.push(`/publish?id=${data.value?.articleId}`);
 };
 
-const updateComments = (id: string) => {
+const deleteComments = (id: string) => {
   data.value!.comment =
     data.value?.comment?.filter((item) => item.id !== id) || [];
 };

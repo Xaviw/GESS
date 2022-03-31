@@ -181,8 +181,9 @@ h2 {
   font-weight: bold;
 }
 .w300 {
-  width: 300px;
+  width: auto;
   max-width: 70vw;
+  min-width: 300px;
 }
 .inline-block {
   display: inline-block;

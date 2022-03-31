@@ -16,7 +16,7 @@ onMounted(() => {
     const E = WangEditor;
     editor = new E("#toolbar-container", "#text-container");
     editor.config.uploadImgServer = "/article/uploadArticleImage";
-    editor.config.zIndex = 1040;
+    editor.config.zIndex = 1000;
     editor.create();
     watchEffect(() => {
       if (props.data) {
