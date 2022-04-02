@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { IArticle } from "@/types/common";
 import { ref } from "vue";
-import { getMyArticle } from "@apis/apis";
+import { getOwnDownloadArticle } from "@apis/apis";
 import ArticleList from "@comps/ArticleList.vue";
 
 const list = ref<IArticle[]>([]);
@@ -14,8 +14,8 @@ const pageQuery = {
   pageSize: 9999,
 };
 
-getMyArticle(pageQuery).then(([res]) => {
-  list.value = res?.data;
+getOwnDownloadArticle(pageQuery).then(([res]) => {
+  list.value = res.data;
 });
 </script>
 

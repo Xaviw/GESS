@@ -106,7 +106,7 @@ const router = useRouter();
 const route = useRoute();
 const store = myStore();
 
-let replyId = ref("");
+let replyId = ref("x");
 let replyContent = ref("");
 
 const reply = (id: string) => {
@@ -119,14 +119,17 @@ const reply = (id: string) => {
 };
 
 const handleReply = (id: string) => {
-  console.log("id: ", id);
+  if (!replyContent.value) {
+    message.warn("请输入回复内容！");
+    return;
+  }
   comment({
     objectId: route.params.id as string,
     parentId: id,
     comment: replyContent.value,
     type: props.type,
   }).then(() => {
-    replyContent.value = "";
+    replyContent.value = "x";
     emit("refresh");
   });
 };

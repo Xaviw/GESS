@@ -83,6 +83,15 @@ const addTag = (data: { name: string; parentId?: string }) =>
 const editTag = (data: { name: string; tagId: string }) =>
   http("post", "/tags/updateTags", data);
 
+const getOwnNotice = (data: IPageQuery) =>
+  http<IPageData<INoticeData>>("get", "/notice/getOwnNotice", data);
+
+const getOwnDownloadArticle = (data: IPageQuery) =>
+  http<IPageData<IArticle>>("get", "article/getSelfDownloadArticle", data);
+
+const downloadArticle = (id: string) =>
+  http("get", "/article/downloadArticle", { file_id: id });
+
 export {
   getTags,
   register,
@@ -106,4 +115,7 @@ export {
   deleteTag,
   addTag,
   editTag,
+  getOwnNotice,
+  getOwnDownloadArticle,
+  downloadArticle,
 };

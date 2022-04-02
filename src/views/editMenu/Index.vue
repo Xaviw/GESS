@@ -1,8 +1,15 @@
 <template>
   <div class="max-area">
-    <h2 style="margin-top: 20px; font-weight: bold">编辑菜单</h2>
+    <div style="display: flex; align-items: center; margin-top: 20px">
+      <h2 style="font-weight: bold">编辑菜单</h2>
+      <a-typography-text type="warning" style="margin-left: 10px"
+        >请在编辑完成后，退出此页面查看菜单变化！</a-typography-text
+      >
+    </div>
+
     <div class="flex-center">
       <div class="box">
+        <h3>一级标题</h3>
         <div class="container">
           <div
             class="item"
@@ -34,6 +41,7 @@
         >
       </div>
       <div class="box">
+        <h3>二级标题</h3>
         <div class="container">
           <div
             class="item"
@@ -129,12 +137,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="less">
+h3 {
+  text-align: center;
+  font-weight: bold;
+}
 .box {
   margin: 20px;
   width: 40%;
 }
 .container {
-  height: 60vh;
+  height: 50vh;
   overflow: auto;
   border: 1px solid #000;
 }

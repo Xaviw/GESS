@@ -1,8 +1,13 @@
 <template>
   <div class="max-area">
     <div class="flex-between">
-      <h2>发布{{ isInfo ? "信息" : "文章" }}</h2>
-      <a-button type="primary" @click="publish">发布</a-button>
+      <h2>{{ motionText }}{{ isInfo ? "信息" : "文章" }}</h2>
+      <div>
+        <a-button type="primary" @click="publish" class="mr-10">{{
+          motionText
+        }}</a-button>
+        <a-button @click="$router.back">取消{{ motionText }}</a-button>
+      </div>
     </div>
     <div class="flex-between" style="margin-bottom: 20px">
       <div>
@@ -12,6 +17,14 @@
             class="w300 inline-block"
             v-model:value="title"
             placeholder="请输入标题"
+          />
+        </p>
+        <p class="bold" v-if="isInfo">
+          简介：&emsp;&emsp;
+          <a-input
+            class="w300 inline-block"
+            v-model:value="brief"
+            placeholder="请输入简介"
           />
         </p>
         <p class="bold">
@@ -58,7 +71,7 @@
 
 <script setup lang="ts">
 import Editor from "@/components/Editor.vue";
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, toRaw, unref, watchEffect } from "vue";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import {
@@ -69,18 +82,19 @@ import {
 } from "@/request/apis";
 import { myStore } from "@/store";
 import { useRoute, useRouter } from "vue-router";
-import { watch } from "vue";
 import { ROLE } from "@/types/common";
 
 const router = useRouter();
 const route = useRoute();
 
 let isInfo = computed(() => route.fullPath.includes("info"));
+let isPublish = ref(true);
+const motionText = computed(() => (isPublish ? "发布" : "编辑"));
 
 let data = ref();
 watchEffect(() => {
   if (route.query.id) {
-    if (route.query.type) {
+    if (!route.fullPath.includes("info")) {
       getArticleDetail(route.query.id as string).then(([res]) => {
         data.value = res.content;
         title.value = res.title;
@@ -98,6 +112,7 @@ watchEffect(() => {
 
 const editorEl = ref<any>(null);
 let title = ref("");
+let brief = ref("");
 
 const store = myStore();
 let tags = ref<any[] | number>([]);
@@ -111,10 +126,7 @@ let tagOptions = computed<any[]>(() => {
   return data;
 });
 
-let infoOptions = [
-  { label: "考研资讯", value: 1 },
-  { label: "论坛交流", value: 2 },
-];
+let infoOptions = [{ label: "交流论坛", value: 2 }];
 if (store.state.role === ROLE.administrator || store.state.role == ROLE.super) {
   infoOptions.unshift({ label: "公告信息", value: 0 });
 }
@@ -138,22 +150,26 @@ const publish = () => {
     message.error("请填写标题！");
     return;
   }
-  if (
-    isInfo.value
-      ? tags.value == undefined
-      : !tags.value || !(tags.value as any[]).length
-  ) {
+  if (isInfo.value && !brief.value) {
+    message.error("请输入简介！");
+    return;
+  }
+  let tag = toRaw(tags.value);
+  console.log("tag: ", tag);
+  if (!(Array.isArray(tag) ? tag.length : tag)) {
     message.error("请选择相关标签！");
     return;
   }
   const content = editorEl.value.getJSON();
-  if (!content) {
+  const text = editorEl.value.getText();
+  if (!text.trim()) {
     message.error("请输入正文！");
     return;
   }
   if (isInfo.value) {
     const param = {
       title: title.value,
+      brief: brief.value,
       content: JSON.stringify(content),
       type: tags.value as unknown as number,
     };

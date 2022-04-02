@@ -30,6 +30,8 @@ export interface IUserInfo {
   sex: SEX;
   phone: string;
   birthday: string;
+  continuesDays: number;
+  isSign: boolean;
 }
 
 export enum SEX {
@@ -65,6 +67,7 @@ export interface IArticle {
   reason?: string;
   views: number;
   likes: number;
+  isNewComment?: boolean;
 }
 
 export interface IArticleInfo {
@@ -76,6 +79,7 @@ export interface IArticleInfo {
   createTime: string;
   face?: string;
   title: string;
+  brief?: string;
   url: string;
   views: number;
   likes: number;

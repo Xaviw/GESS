@@ -33,8 +33,24 @@
         </div>
 
         <div class="flex-center">
+          <a-popover title="" v-if="checked">
+            <template #content>
+              <span style="font-weight: bold"
+                >您已连续签到{{ checkInDays }}天，继续努力吧！</span
+              >
+            </template>
+            <img src="@/assets/checked.png" class="check-in" />
+          </a-popover>
+          <img
+            src="@/assets/checkIn.png"
+            alt="点击签到"
+            class="check-in"
+            style="cursor: pointer"
+            @click="checkIn"
+            v-else
+          />
           <a-menu mode="horizontal ">
-            <a-menu-item key="forum" @click="gotoForum">论坛</a-menu-item>
+            <a-menu-item key="forum" @click="gotoForum">学习圈</a-menu-item>
             <a-menu-item key="publish" @click="publish">发布文章</a-menu-item>
           </a-menu>
           <a-button type="primary" @click="redirectToLogin" v-if="!userInfo"
@@ -99,7 +115,7 @@
 import { computed, inject } from "vue";
 import { UserOutlined } from "@ant-design/icons-vue";
 import { getTags } from "@/request/apis";
-import { navigateIfLogin, redirectToLogin } from "@utils/index";
+import { redirectToLogin } from "@utils/index";
 import { myStore } from "@/store";
 import { handleLogout } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
@@ -109,6 +125,10 @@ const appTitle = inject("appTitle");
 const store = myStore();
 const router = useRouter();
 const route = useRoute();
+
+const checked = computed(() => store.state.userInfo?.isSign);
+const checkInDays = computed(() => store.state.userInfo?.continuesDays);
+const checkIn = () => {};
 
 if (!store.state.tags?.length) {
   getTags().then(([res]) => {
@@ -138,7 +158,7 @@ let selectedKeys = computed({
 });
 
 const publish = () => {
-  navigateIfLogin("/publish");
+  router.push("/publish");
 };
 
 const gotoForum = () => {
@@ -190,5 +210,8 @@ const gotoForum = () => {
   padding: 15px;
   background: #25282a;
   color: #676b6f;
+}
+.check-in {
+  height: 55px;
 }
 </style>

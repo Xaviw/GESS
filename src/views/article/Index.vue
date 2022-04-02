@@ -23,6 +23,7 @@
         >
       </div>
     </div>
+    <p v-if="isInfo">{{ data?.brief }}</p>
     <div class="flex-between" style="margin-bottom: 20px">
       <div style="display: flex">
         <span class="flex-between mr-20">
@@ -62,7 +63,12 @@
       </div>
     </div>
     <Editor :canEdit="false" :data="data?.content" />
-    <Enclosure :file="data?.url" :id="data?.articleId" target="blank" />
+    <Enclosure
+      :file="data?.url"
+      :id="data?.articleId"
+      target="blank"
+      v-if="!isInfo"
+    />
     <CommentList
       :comments="data?.comment || []"
       :type="isInfo ? 0 : 1"
@@ -117,14 +123,16 @@ const handleDelete = () => {
     objectId: route.params.id as string,
     type: isInfo.value ? 0 : 1,
   }).then(() => {
-    router.replace("/");
+    router.replace(isInfo ? "/forum" : "/");
   });
 };
 
 const handleEdit = () => {
-  router.push(
-    `/publish?id=${data.value?.articleId}&type=${isInfo.value ? 0 : 1}`
-  );
+  if (isInfo.value) {
+    router.push(`/publish/info?id=${data.value?.articleId}`);
+  } else {
+    router.push(`/publish?id=${data.value?.articleId}`);
+  }
 };
 
 const deleteComments = (id: string) => {

@@ -30,17 +30,18 @@ onMounted(() => {
 });
 
 const getJSON = () => editor?.txt.getJSON();
+const getText = () => editor?.txt.text();
 
-defineExpose({ getJSON });
+defineExpose({ getJSON, getText });
 
 const createEditor = () => {
-  console.log(editor);
   editor?.destroy();
   const E = WangEditor;
   editor = new E("#toolbar-container", "#text-container");
   editor.config.uploadImgServer = "/article/uploadArticleImage";
   editor.config.zIndex = 1000;
   editor.create();
+  editor.txt.clear();
 };
 
 onUnmounted(() => {

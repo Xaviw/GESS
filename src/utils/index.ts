@@ -10,8 +10,6 @@ import { logout } from "@/request/apis";
 import dayjs from "dayjs";
 //导相对时间插件
 import relativeTime from "dayjs/plugin/relativeTime";
-//导国际化插件i18n
-import "dayjs/locale/zh-cn";
 dayjs.extend(relativeTime);
 
 const types = new Set();
@@ -81,21 +79,7 @@ function getBase64(img: Blob, callback: (base64Url: string) => void) {
 }
 
 const relTime = (strDate: string) => {
-  return dayjs().locale("zh-cn").from(strDate);
-};
-
-const navigateIfLogin = (target: string, resetMenu: boolean = true) => {
-  const router = Vrouter;
-  if (store.state.alreadyLogin) {
-    router.push(target);
-    if (resetMenu) {
-      store.commit("modify", {
-        currentMenu: [],
-      });
-    }
-  } else {
-    router.push("/login");
-  }
+  return dayjs().from(strDate);
 };
 
 const COLOR = ["pink", "red", "orange", "green", "cyan", "blue", "purple"];
@@ -107,6 +91,5 @@ export {
   handleLogout,
   getBase64,
   relTime,
-  navigateIfLogin,
   COLOR,
 };
