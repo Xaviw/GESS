@@ -33,22 +33,27 @@
         </div>
 
         <div class="flex-center">
-          <a-popover title="" v-if="checked">
-            <template #content>
-              <span style="font-weight: bold"
-                >您已连续签到{{ checkInDays }}天，继续努力吧！</span
-              >
-            </template>
-            <img src="@/assets/checked.png" class="check-in" />
-          </a-popover>
-          <img
-            src="@/assets/checkIn.png"
-            alt="点击签到"
-            class="check-in"
-            style="cursor: pointer"
-            @click="checkIn"
-            v-else
-          />
+          <template v-if="alreadyLogin">
+            <a-popover title="" v-if="checked">
+              <template #content>
+                <span style="font-weight: bold"
+                  >您已连续签到{{ checkInDays }}天，继续努力吧！</span
+                >
+              </template>
+              <img src="@/assets/checked.png" class="check-in" />
+            </a-popover>
+            <a-popover title="" v-else>
+              <template #content>点击签到！</template>
+              <img
+                src="@/assets/checkIn.png"
+                alt="点击签到"
+                class="check-in"
+                style="cursor: pointer"
+                @click="handleCheckIn"
+              />
+            </a-popover>
+          </template>
+
           <a-menu mode="horizontal ">
             <a-menu-item key="forum" @click="gotoForum">学习圈</a-menu-item>
             <a-menu-item key="publish" @click="publish">发布文章</a-menu-item>
@@ -114,7 +119,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import { UserOutlined } from "@ant-design/icons-vue";
-import { getTags } from "@/request/apis";
+import { getTags, checkIn } from "@/request/apis";
 import { redirectToLogin } from "@utils/index";
 import { myStore } from "@/store";
 import { handleLogout } from "@/utils";
@@ -126,9 +131,20 @@ const store = myStore();
 const router = useRouter();
 const route = useRoute();
 
+const alreadyLogin = computed(() => store.state.alreadyLogin);
 const checked = computed(() => store.state.userInfo?.isSign);
 const checkInDays = computed(() => store.state.userInfo?.continuesDays);
-const checkIn = () => {};
+const handleCheckIn = () => {
+  checkIn(store.state.userInfo?.account as string).then(() => {
+    store.commit("modify", {
+      userInfo: {
+        ...store.state.userInfo,
+        isSign: true,
+        continuesDays: (store.state.userInfo?.continuesDays || 0) + 1,
+      },
+    });
+  });
+};
 
 if (!store.state.tags?.length) {
   getTags().then(([res]) => {

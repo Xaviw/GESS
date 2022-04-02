@@ -92,6 +92,8 @@ const getOwnDownloadArticle = (data: IPageQuery) =>
 const downloadArticle = (id: string) =>
   http("get", "/article/downloadArticle", { file_id: id });
 
+const checkIn = (account: string) => http("post", "/user/sign", { account });
+
 export {
   getTags,
   register,
@@ -118,4 +120,5 @@ export {
   getOwnNotice,
   getOwnDownloadArticle,
   downloadArticle,
+  checkIn,
 };

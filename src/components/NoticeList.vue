@@ -5,7 +5,6 @@
     :data-source="listData"
     style="padding: 0 0 20px 0"
   >
-    <!-- :pagination="pagination" -->
     <template #renderItem="{ item }">
       <a-badge-ribbon
         text="有新的评论！"
@@ -62,10 +61,6 @@ import {
 import { relTime } from "@utils/index";
 
 defineProps<{ listData: INoticeData[] }>();
-
-// const pagination = reactive({
-//   total: 0,
-// });
 </script>
 
 <style scoped lang="less">
