@@ -127,7 +127,7 @@ let tagOptions = computed<any[]>(() => {
 });
 
 let infoOptions = [{ label: "交流论坛", value: 2 }];
-if (store.state.role === ROLE.administrator || store.state.role == ROLE.super) {
+if (store.state.role !== ROLE.user) {
   infoOptions.unshift({ label: "公告信息", value: 0 });
 }
 
@@ -155,8 +155,7 @@ const publish = () => {
     return;
   }
   let tag = toRaw(tags.value);
-  console.log("tag: ", tag);
-  if (!(Array.isArray(tag) ? tag.length : tag)) {
+  if (!(Array.isArray(tag) ? tag.length : tag !== undefined)) {
     message.error("请选择相关标签！");
     return;
   }

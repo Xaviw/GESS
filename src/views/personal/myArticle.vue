@@ -1,5 +1,5 @@
 <template>
-  <ArticleList :listData="list" />
+  <ArticleList :listData="list" timeText="创建时间" />
 </template>
 
 <script lang="ts" setup>

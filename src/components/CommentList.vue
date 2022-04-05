@@ -19,7 +19,11 @@
   </div>
   <a-comment v-for="item in comments" :key="item.id">
     <template #actions>
-      <span key="comment-basic-reply-to" class="flex-between">
+      <span
+        key="comment-basic-reply-to"
+        class="flex-between"
+        v-if="item.userId !== store.state.userInfo?.id"
+      >
         <span class="mr-10" style="width: 4em" @click="reply(item.id)"
           >回复</span
         >
@@ -33,7 +37,7 @@
           size="small"
           style="margin-left: 10px"
           v-show="item.id == replyId"
-          @click="handleReply(item.id)"
+          @click="handleReply(item.userId)"
           >回复</a-button
         >
       </span>
@@ -129,7 +133,7 @@ const handleReply = (id: string) => {
     comment: replyContent.value,
     type: props.type,
   }).then(() => {
-    replyContent.value = "x";
+    replyId.value = "x";
     emit("refresh");
   });
 };

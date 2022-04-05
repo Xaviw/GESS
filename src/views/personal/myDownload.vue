@@ -1,5 +1,5 @@
 <template>
-  <ArticleList :listData="list" />
+  <ArticleList :listData="list" timeText="下载时间" />
 </template>
 
 <script lang="ts" setup>

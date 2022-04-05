@@ -18,7 +18,7 @@
         <iframe
           src="https://m.juyingonline.com/school"
           frameborder="0"
-          style="width: 100%; height: 100%"
+          style="width: 100%; height: calc(100vh - 72px)"
         ></iframe>
       </div>
     </div>
@@ -58,6 +58,7 @@ watchEffect(() => {
     margin: 20px 0 0 20px;
     position: sticky;
     top: 20px;
+    overflow: hidden;
   }
 }
 </style>

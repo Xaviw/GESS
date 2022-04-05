@@ -58,6 +58,8 @@ import { IUserInfo } from "@/types/common";
 import { SEX } from "@/types/common";
 import dayjs, { Dayjs } from "dayjs";
 import { modifyProfile } from "@apis/apis";
+import { local } from "@/utils/storage";
+import { userInfo } from "os";
 export type IModifyInfo = Partial<
   Pick<IUserInfo, "name" | "sex" | "phone"> & { birthday?: Dayjs }
 >;
@@ -77,6 +79,11 @@ const handleChange = (info: any) => {
     store.commit("modify", {
       userInfo: { ...store.state.userInfo, face: info.file.response.data.face },
     });
+    local.set(
+      "userInfo",
+      { ...local.get("userInfo"), face: info.file.response.data.face },
+      1000 * 60 * 60 * 24 * 7
+    );
     loading.value = false;
   }
   if (info.file.status === "error") {

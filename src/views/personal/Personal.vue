@@ -4,7 +4,9 @@
       <a-tab-pane key="1" tab="个人资料"><Profile /></a-tab-pane>
       <a-tab-pane key="2" tab="我的文章"><MyArticle /></a-tab-pane>
       <a-tab-pane key="3" tab="我的下载"><MyDownload /></a-tab-pane>
-      <a-tab-pane key="4" tab="我的公告"><MyNotice /></a-tab-pane>
+      <a-tab-pane key="4" tab="我的公告" v-if="store.state.role !== ROLE.user"
+        ><MyNotice
+      /></a-tab-pane>
       <a-tab-pane key="5" tab="修改密码"><ModifyPwd /></a-tab-pane>
     </a-tabs>
   </div>
