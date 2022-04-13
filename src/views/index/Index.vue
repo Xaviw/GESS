@@ -64,11 +64,11 @@ const handleSearch = () => {
   if (keyWord.value !== currentKey) {
     queryParam.page = 1;
     total = 0;
-    currentKey = keyWord.value;
+    queryParam.keyword = currentKey = keyWord.value;
     list.value = [];
   }
   getArticle(queryParam).then(([res]) => {
-    list.value.push(...res.data);
+    list.value.push(...res?.data);
     if (res.total !== total) {
       total = res.total;
     }

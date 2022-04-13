@@ -2,7 +2,7 @@
 
 Graduate Exam Share System
 
-Vue3 + TS + ant-design-vue 简单考研分享平台
+Vue3 + TS + ant-design-vue 简陋考研分享平台项目
 
 用到 wangEditor、axios、axios-retry
 
